@@ -36,9 +36,10 @@ the more detailed instructions below.
 
 ## Google Cloud Console logger integration
 
-In order for your application logs to appear in the Google Cloud Console, they
-should be written in a specific format to a specific location. The logger
-module in this gem provides tools to make that happen.
+In order for your application logs to appear in the Google Cloud Console with
+the correct severities and other metadata, they should be written in a
+specific format to a specific location. The logger module in this gem provides
+tools to make that happen.
 
 If you are using Ruby on Rails, and you do not otherwise customize your
 Rails logger, then the provided Railtie will direct your logs to the Cloud
@@ -57,12 +58,7 @@ environment. You may also create your own logger directly using the
 
 ## Development and support
 
-This software is not an official Google product, and is not covered by an SLA
-or support agreement. It is provided as a community-driven open source product
-for the Ruby developer community, and is made available under the Apache 2.0
-license.
-
-The source code is available on Github at
+The source code for this gem is available on Github at
 https://github.com/GoogleCloudPlatform/appengine-ruby
 
 Report bugs on Github issues at
