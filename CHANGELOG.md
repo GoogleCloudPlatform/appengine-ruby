@@ -2,7 +2,7 @@
 
 This is the change history for the appengine gem.
 
-## v0.2.0 (not yet released)
+## v0.2.0 (2016-05-04)
 
 *   Tools for integration with the Google Cloud Console logger, including
     Rack middleware and a Railtie.

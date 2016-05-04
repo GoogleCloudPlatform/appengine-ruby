@@ -32,7 +32,7 @@ require 'appengine/version'
       "Cloud Console and interpretation of App Engine headers. However, it " +
       "is not required for deploying your Ruby application to App Engine."
   spec.license = "Apache 2.0"
-  spec.homepage = "https://github.com/GoogleCloudPlatform"
+  spec.homepage = "https://github.com/GoogleCloudPlatform/appengine-ruby"
 
   spec.files = ::Dir.glob("lib/**/*.rb") + ::Dir.glob("test/**/*.rb") +
     ::Dir.glob("*.md") + ["LICENSE", "Rakefile"]
