@@ -14,26 +14,19 @@
 ;
 
 
+require "google-cloud-env"
+
+
 module AppEngine
 
-
-  # == Environment information
+  ##
+  # A collection of functions for extracting App Engine environment information.
   #
-  # A collection of functions for extracting App Engine environment information
-  # from the Rack environment
-
   module Env
 
-
-    # Returns the Trace ID string from a Rack environment, or nil if no trace
-    # ID was found.
-
-    def self.extract_trace_id(env)
-      trace_context = env['HTTP_X_CLOUD_TRACE_CONTEXT'].to_s
-      return nil if trace_context.empty?
-      return trace_context.sub(/\/.*/, '')
+    def self.app_engine?
+      ::ENV["GAE_INSTANCE"] ? true : false
     end
-
 
   end
 

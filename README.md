@@ -9,7 +9,14 @@ environment.
 
 Currently, it includes:
 
-*   A way to configure the Logger to log to the Google Cloud Console.
+* Automatic Stackdriver instrumentation for Rails apps. This means logs,
+  error reports, and latency traces are reported to the cloud console.
+* A placeholder for a class that provides app engine environment information
+  such as project ID and VM info.
+
+Planned for the near future:
+
+* Streamlined implementation of health checks and other lifecycle hooks.
 
 For more information on using Google Cloud Platform to deploy Ruby apps,
 please visit http://cloud.google.com/ruby
@@ -27,34 +34,18 @@ may need to include the line:
     require "appengine"
 
 in your `config/application.rb` file if you aren't already requiring all
-bundled gems. You may provide additional configuration via the
-`config.appengine` object. See below for more details.
+bundled gems.
 
-If you are using a different Rack-based framework such as
-[Sinatra](http://sinatrarb.com/), you can use the provided middlewares. See
-the more detailed instructions below.
+## Logging and monitoring
 
-## Google Cloud Console logger integration
+This library automatically installs the "stackdriver" gem, which instruments
+your application to report logs, unhandled exceptions, and latency traces to
+your project's Google Cloud Console. For more information on the application
+monitoring features of Google App Engine, see:
 
-In order for your application logs to appear in the Google Cloud Console with
-the correct severities and other metadata, they should be written in a
-specific format to a specific location. The logger module in this gem provides
-tools to make that happen.
-
-If you are using Ruby on Rails, and you do not otherwise customize your
-Rails logger, then the provided Railtie will direct your logs to the Cloud
-Console "out of the box". Normally, this is configured to take effect when
-running in the `production` environment, but you may also configure it for
-other environments. See the documentation for the `AppEngine::Railtie` class
-for more details.
-
-If you are running a different Rack-based framework such as Sinatra, you
-should install the provided `AppEngine::Logger::Middleware` in your middleware
-stack. This should be installed instead of the normal `Rack::Logger`. It will
-automatically create a logger that directs entries to the Cloud Console, and
-will make it available via the standard `Rack::RACK_LOGGER` key in the Rack
-environment. You may also create your own logger directly using the
-`AppEngine::Logger.create()` method.
+* [google-cloud-logging instrumentation](http://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-logging/latest/guides/instrumentation)
+* [google-cloud-error_reporting instrumentation](http://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-error_reporting/latest/guides/instrumentation)
+* [google-cloud-trace instrumentation](http://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-trace/latest/guides/instrumentation)
 
 ## Development and support
 
