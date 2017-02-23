@@ -24,5 +24,4 @@ end
 
 require 'appengine/version'
 require 'appengine/env'
-require 'appengine/logger'
 require 'appengine/railtie' if defined?(::Rails)

@@ -29,7 +29,7 @@ require 'appengine/version'
   spec.description = "The appengine gem is a set of classes, plugins, and " +
       "tools for integration with Google App Engine. It provides access to " +
       "the App Engine runtime environment, including logging to the Google " +
-      "Cloud Console and interpretation of App Engine headers. However, it " +
+      "Cloud Console and interrogation of hosting properties. However, it " +
       "is not required for deploying your Ruby application to App Engine."
   spec.license = "Apache 2.0"
   spec.homepage = "https://github.com/GoogleCloudPlatform/appengine-ruby"
@@ -39,7 +39,9 @@ require 'appengine/version'
   spec.required_ruby_version = ">= 2.0.0"
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.11"
+  spec.add_dependency "stackdriver", "~> 0.4"
+
+  spec.add_development_dependency "bundler", "~> 1.14"
   spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "rake", "~> 11.0"
   spec.add_development_dependency "rdoc", "~> 4.2"

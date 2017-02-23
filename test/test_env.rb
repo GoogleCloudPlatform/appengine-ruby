@@ -23,31 +23,11 @@ module AppEngine
     class TestEnv < ::Minitest::Test  # :nodoc:
 
 
-      def test_extract_trace_id_absent
-        env = {}
-        trace_id = Env.extract_trace_id(env)
-        assert_nil(trace_id)
-      end
-
-
-      def test_extract_trace_id_empty
-        env = {'HTTP_X_CLOUD_TRACE_CONTEXT' => ''}
-        trace_id = Env.extract_trace_id(env)
-        assert_nil(trace_id)
-      end
-
-
-      def test_extract_trace_id_simple
-        env = {'HTTP_X_CLOUD_TRACE_CONTEXT' => 'abcdefg'}
-        trace_id = Env.extract_trace_id(env)
-        assert_equal('abcdefg', trace_id)
-      end
-
-
-      def test_extract_trace_id_with_suffix
-        env = {'HTTP_X_CLOUD_TRACE_CONTEXT' => 'abcdefg/hijk/lmnop'}
-        trace_id = Env.extract_trace_id(env)
-        assert_equal('abcdefg', trace_id)
+      def test_app_engine
+        ::ENV["GAE_INSTANCE"] = "instance-123"
+        assert Env.app_engine?
+        ::ENV.delete "GAE_INSTANCE"
+        refute Env.app_engine?
       end
 
 
