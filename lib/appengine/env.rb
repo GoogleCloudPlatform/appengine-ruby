@@ -14,9 +14,6 @@
 ;
 
 
-require "google-cloud-env"
-
-
 module AppEngine
 
   ##
