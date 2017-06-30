@@ -13,18 +13,26 @@
 # limitations under the License.
 ;
 
+require "google/cloud/env"
+
 
 module AppEngine
 
   ##
-  # A collection of functions for extracting App Engine environment information.
+  # A convenience object that provides information on the Google Cloud
+  # hosting environment. For example, you can call
   #
-  module Env
-
-    def self.app_engine?
-      ::ENV["GAE_INSTANCE"] ? true : false
-    end
-
-  end
+  #     if AppEngine::Env.app_engine?
+  #       # Do something
+  #     end
+  #
+  # Technically, `Env` is not actually a module, but is simply set to the
+  # `Google::Cloud.env` object.
+  #
+  # This is provided mostly for backward compatibility with previous usage, and
+  # is mildly deprecated. Generally, you should call `Google::Cloud.env`
+  # directly instead. See the documentation for the `google-cloud-env` gem.
+  #
+  Env = ::Google::Cloud.env
 
 end

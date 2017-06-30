@@ -22,14 +22,12 @@ module AppEngine
 
     class TestEnv < ::Minitest::Test  # :nodoc:
 
-
       def test_app_engine
         ::ENV["GAE_INSTANCE"] = "instance-123"
         assert Env.app_engine?
         ::ENV.delete "GAE_INSTANCE"
         refute Env.app_engine?
       end
-
 
     end
 
