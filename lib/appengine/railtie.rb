@@ -34,14 +34,53 @@ module AppEngine
   #
   # ## Configuration
   #
-  # TODO
+  # You may selectively deactivate features of this Railtie using Rails
+  # configuration keys. For example, to disable rake tasks, include the
+  # following line in one of your Rails configuration files:
+  #
+  #     config.appengine.define_tasks = false
+  #
+  # The following configuration keys are supported. Additional keys specific
+  # to the various Stackdriver services may be defined in the individual
+  # libraries.
+  #
+  # ### appengine.define_tasks
+  #
+  # Causes rake tasks to be added to the application. Default is true. Set it
+  # to false to disable App Engine rake tasks.
+  #
+  # ### google_cloud.use_logging
+  #
+  # Activates Stackdriver Logging, collecting Rails logs so they appear on
+  # the Google Cloud console. Default is true. Set it to false to disable
+  # logging instrumentation.
+  #
+  # ### google_cloud.use_error_reporting
+  #
+  # Activates Stackdriver Error Reporting, collecting exceptions so they appear
+  # on the Google Cloud console. Default is true. Set it to false to disable
+  # error instrumentation.
+  #
+  # ### google_cloud.use_trace
+  #
+  # Activates Stackdriver Trace instrumentation, collecting application latency
+  # trace data so it appears on the Google Cloud conosle. Default is true. Set
+  # it to false to disable trace instrumentation.
+  #
+  # ### google_cloud.use_debugger
+  #
+  # Enables the Stackdriver Debugger. Default is true. Set it to false to
+  # disable debugging.
   #
   class Railtie < ::Rails::Railtie
 
     config.appengine = ::ActiveSupport::OrderedOptions.new
+    config.appengine.define_tasks = true
 
-    rake_tasks do
-      require "appengine/tasks"
+    rake_tasks do |app|
+      if app.config.appengine.define_tasks
+        require "appengine/tasks"
+      end
     end
 
   end

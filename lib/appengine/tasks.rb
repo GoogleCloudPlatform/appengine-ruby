@@ -120,8 +120,6 @@ module AppEngine
       private
 
       def setup_verify_gcloud_task
-        ::Rake.application.last_description =
-            "Verify that gcloud is installed, configured, and authenticated."
         ::Rake::Task.define_task "appengine:verify_gcloud" do
           Util::Gcloud.verify!
         end

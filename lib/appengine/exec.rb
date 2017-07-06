@@ -94,22 +94,25 @@ module AppEngine
   # have stalled and is terminated. The timeout should be a string of the form
   # `2h15m10s`. The default is `15m`.
   #
-  # ## Examples
-  #
-  # TODO
-  #
   # ## Resource usage and billing
   #
   # App Engine remote execution uses virtual machine resources provided by
-  # Google Cloud Container Builder.
+  # Google Cloud Container Builder. Generally, a certain number of usage
+  # minutes per day is covered under a free tier, but additional compute usage
+  # beyond that time is billed to your Google Cloud account. For more details,
+  # see https://cloud.google.com/container-builder/pricing
+  #
+  # If your command makes API calls or utilizes other cloud resources, you may
+  # also be billed for that usage. However, remote execution does not use
+  # actual App Engine instances, and you will not be billed for additional App
+  # Engine instance usage.
   #
   class Exec
 
-    WRAPPER_IMAGE="gcr.io/google-appengine/exec-wrapper".freeze
-
-    @default_timeout = "15m"
-    @default_service = "default"
-    @default_config_path = "./app.yaml"
+    @default_timeout = "15m".freeze
+    @default_service = "default".freeze
+    @default_config_path = "./app.yaml".freeze
+    @default_wrapper_image = "gcr.io/google-appengine/exec-wrapper".freeze
 
 
     ##
@@ -158,6 +161,9 @@ module AppEngine
 
       ## @return [String] Path to default config file.
       attr_accessor :default_config_path
+
+      ## @return [String] Docker image that implements the app engine wrapper.
+      attr_accessor :default_wrapper_image
 
       ##
       # Create an execution for a rake task.
@@ -218,6 +224,7 @@ module AppEngine
       @config_path = config_path
       @version = version
       @timeout = timeout
+      @wrapper_image = nil
 
       yield self if block_given?
     end
@@ -237,6 +244,9 @@ module AppEngine
 
     ## @return [String,Array<String>] Command to run.
     attr_accessor :command
+
+    ## @return [String] Custom wrapper image to use, or nil to use the default.
+    attr_accessor :wrapper_image
 
 
     ##
@@ -291,6 +301,7 @@ module AppEngine
 
       @version ||= latest_version @service
       @timeout ||= Exec.default_timeout
+      @wrapper_image ||= Exec.default_wrapper_image
     end
 
     ##
@@ -319,7 +330,7 @@ module AppEngine
 
       {
         "steps" => [
-          "name" => WRAPPER_IMAGE,
+          "name" => @wrapper_image,
           "args" => args
         ]
       }
