@@ -4,18 +4,23 @@ Google App Engine Integration Tools
 This repository contains the "appengine" gem, a collection of libraries and
 plugins for integrating Ruby apps with Google App Engine. It is not required
 for deploying a ruby application to Google App Engine, but it provides a
-number of convenience hooks for better integrating into the App Engine
+number of convenience hooks and tools for integrating into the App Engine
 environment.
 
 Currently, it includes:
 
 * Automatic Stackdriver instrumentation for Rails apps. This means logs,
-  error reports, and latency traces are reported to the cloud console.
-* A placeholder for a class that provides app engine environment information
-  such as project ID and VM info.
+  error reports, and latency traces are reported to the cloud console,
+  and debugger integration is available.
+* A client and rake tasks for executing application commands in the App
+  Engine environment against production resources, useful for tasks such as
+  running production database migrations.
+* Convenient access to environment information such as project ID and VM
+  properties.
 
 Planned for the near future:
 
+* Tools for generating "app.yaml" configuration files for Ruby applications.
 * Streamlined implementation of health checks and other lifecycle hooks.
 
 For more information on using Google Cloud Platform to deploy Ruby apps,
@@ -36,6 +41,9 @@ may need to include the line:
 in your `config/application.rb` file if you aren't already requiring all
 bundled gems.
 
+If you are running a different web framework, you may need to add some
+initialization code to activate the features listed below.
+
 ## Logging and monitoring
 
 This library automatically installs the "stackdriver" gem, which instruments
@@ -46,6 +54,37 @@ monitoring features of Google App Engine, see:
 * [google-cloud-logging instrumentation](http://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-logging/latest/guides/instrumentation)
 * [google-cloud-error_reporting instrumentation](http://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-error_reporting/latest/guides/instrumentation)
 * [google-cloud-trace instrumentation](http://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-trace/latest/guides/instrumentation)
+
+Rails applications automatically activate this instrumentation when the gem
+is present. You may opt out of individual services by providing appropriate
+Rails configuration. See {AppEngine::Railtie} for more information.
+
+Non-Rails applications must provide initialization code to activate this
+instrumentation, typically by installing a Rack middleware. See the individual
+service documentation links above for more information.
+
+## App Engine remote execution
+
+This library provides rake tasks for App Engine remote execution, allowing
+App Engine applications to perform on-demand tasks in the App Engine
+environment. This may be used for safe running of ops and maintenance tasks,
+such as database migrations, that access production cloud resources. For
+example, a production database migration in a Rails app could be run using:
+
+    bundle exec rake appengine:exec:db:migrate
+
+The migration would be run in VMs provided by Google Cloud, using a privileged
+service account that will have access to the production cloud resources, such
+as Cloud SQL instances, used by the application. This mechanism is often much
+easier and safer than running the task on a local workstation and granting
+that workstation direct access to those Cloud SQL instances.
+
+See {AppEngine::Exec} for more information on App Engine remote execution.
+
+See {AppEngine::Tasks} for more information on running the rake tasks. The
+tasks are available automatically in Rails applications when the gem is
+present. Non-Rails applications may install the tasks by adding the line
+`require "appengine/tasks"` to the `Rakefile`.
 
 ## Development and support
 

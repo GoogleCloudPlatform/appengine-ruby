@@ -13,35 +13,37 @@
 # limitations under the License.
 ;
 
-require 'fileutils'
-
 
 module AppEngine
 
-
-  # == AppEngine Rails integration
+  ##
+  # # AppEngine Rails integration
   #
   # A Railtie providing Rails integration with the Google App Engine runtime
-  # environment. Sets up the Rails logger to log to the Google Cloud Console
-  # in production.
+  # environment.
+  #
+  # Specifically:
+  # * It installs the Stackdriver instrumentation, providing application
+  #   diagnostics to the project's Stackdriver account.
+  # * It installs the rake tasks, providing the ability to execute commands
+  #   on demand in the production App Engine environment.
   #
   # To use, just include the "appengine" gem in your gemfile, and make sure
   # it is required in your config/application.rb (if you are not already
   # using Bundler.require).
   #
-  # === Configuration
+  # ## Configuration
   #
-  # This is a placeholder for now.
-
+  # TODO
+  #
   class Railtie < ::Rails::Railtie
-
-    # :stopdoc:
 
     config.appengine = ::ActiveSupport::OrderedOptions.new
 
-    # :startdoc:
+    rake_tasks do
+      require "appengine/tasks"
+    end
 
   end
-
 
 end
