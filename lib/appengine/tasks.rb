@@ -41,11 +41,13 @@ module AppEngine
   # this capability.
   #
   # The command to be run may be provided as a rake argument, or as command
-  # line arguments. For example, to run a production database migration, you
-  # might run either of the following equivalent commands:
+  # line arguments, delimited by two dashes `--`. (The dashes are needed to
+  # separate your command from rake arguments and flags.)
+  # For example, to run a production database migration, you can run either of
+  # the following equivalent commands:
   #
   #    bundle exec rake "appengine:exec[bundle exec rake db:migrate]"
-  #    bundle exec rake appengine:exec bundle exec rake db:migrate
+  #    bundle exec rake appengine:exec -- bundle exec rake db:migrate
   #
   # ### Parameters
   #
@@ -53,7 +55,7 @@ module AppEngine
   # enviroment variable parameters. These are set via the normal mechanism at
   # the end of a rake command line. For example, to set GAE_CONFIG:
   #
-  #     bundle exec rake appengine:exec bundle exec rake db:migrate GAE_CONFIG=myservice.yaml
+  #     bundle exec rake appengine:exec -- bundle exec rake db:migrate GAE_CONFIG=myservice.yaml
   #
   # The following environment variable parameters are supported:
   #
@@ -114,8 +116,12 @@ module AppEngine
           if args[:cmd]
             command = ::Shellwords.split args[:cmd]
           else
-            i = ::ARGV.index{ |a| a.to_s == "appengine:exec" } + 1
-            i += 1 while ::ARGV[i] =~ /^-/
+            i = (::ARGV.index{ |a| a.to_s == "--" } || -1) + 1
+            if i == 0
+              raise "No command provided for appengine:exec." \
+                " Did you remember to delimit it with two dashes? e.g." \
+                " `rake appengine:exec -- bundle exec ruby myscript.rb`"
+            end
             command = ::ARGV[i..-1]
           end
           app_exec = Exec.new \

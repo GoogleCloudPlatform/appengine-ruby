@@ -69,15 +69,15 @@ This library provides rake tasks for App Engine remote execution, allowing
 App Engine applications to perform on-demand tasks in the App Engine
 environment. This may be used for safe running of ops and maintenance tasks,
 such as database migrations, that access production cloud resources. For
-example, a production database migration in a Rails app could be run using:
+example, you could run a production database migration in a Rails app using:
 
-    bundle exec rake appengine:exec:db:migrate
+    bundle exec rake appengine:exec -- bundle exec rake db:migrate
 
-The migration would be run in VMs provided by Google Cloud, using a privileged
-service account that will have access to the production cloud resources, such
-as Cloud SQL instances, used by the application. This mechanism is often much
-easier and safer than running the task on a local workstation and granting
-that workstation direct access to those Cloud SQL instances.
+The migration would be run in VMs provided by Google Cloud. It uses a
+privileged service account that will have access to the production cloud
+resources, such as Cloud SQL instances, used by the application. This mechanism
+is often much easier and safer than running the task on a local workstation and
+granting that workstation direct access to those Cloud SQL instances.
 
 See {AppEngine::Exec} for more information on App Engine remote execution.
 
