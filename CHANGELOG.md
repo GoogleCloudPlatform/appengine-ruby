@@ -2,10 +2,10 @@
 
 This is the change history for the appengine gem.
 
-## v0.4.0 (2017-07-??)
+## v0.4.0 (2017-07-14)
 
 *   Provided rake tasks to access App Engine remote execution.
-*   Implemented AppEngine::Env as an alias to the google-cloud-env gem's
+*   Reimplemented AppEngine::Env as an alias to the google-cloud-env gem's
     functionality.
 
 ## v0.3.0 (2017-02-28)

@@ -22,15 +22,17 @@ require 'appengine/version'
 ::Gem::Specification.new do |spec|
   spec.name = "appengine"
   spec.version = ::AppEngine::VERSION
-  spec.authors = ["Adam Tanner", "Daniel Azuma"]
-  spec.email = ["adamtanner@google.com", "dazuma@gmail.com"]
+  spec.authors = ["Daniel Azuma"]
+  spec.email = ["dazuma@gmail.com"]
 
   spec.summary = "Google App Engine integration tools"
   spec.description = "The appengine gem is a set of classes, plugins, and " +
       "tools for integration with Google App Engine. It provides access to " +
       "the App Engine runtime environment, including logging to the Google " +
-      "Cloud Console and interrogation of hosting properties. However, it " +
-      "is not required for deploying your Ruby application to App Engine."
+      "Cloud Console and interrogation of hosting properties. It also " +
+      "provides rake tasks for managing your App Engine application, for " +
+      "example to run production maintenance commands. " +
+      "This gem is not required to deploy your Ruby application to App Engine."
   spec.license = "Apache 2.0"
   spec.homepage = "https://github.com/GoogleCloudPlatform/appengine-ruby"
 
@@ -40,7 +42,7 @@ require 'appengine/version'
   spec.require_paths = ["lib"]
 
   spec.add_dependency "google-cloud-env", "~> 1.0"
-  spec.add_dependency "stackdriver", "~> 0.6"
+  spec.add_dependency "stackdriver", "~> 0.7"
 
   spec.add_development_dependency "bundler", "~> 1.15"
   spec.add_development_dependency "minitest", "~> 5.0"

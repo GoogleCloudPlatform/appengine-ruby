@@ -25,6 +25,6 @@ end
 require "appengine/version"
 require "appengine/env"
 require "appengine/exec"
-require "appengine/railtie" if defined?(::Rails)
+require "appengine/railtie" if defined? ::Rails
 
 require "stackdriver"

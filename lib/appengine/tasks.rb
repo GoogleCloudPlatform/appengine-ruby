@@ -51,51 +51,40 @@ module AppEngine
   #
   # You may customize the behavior of App Engine execution through a few
   # enviroment variable parameters. These are set via the normal mechanism at
-  # the end of a rake command line. For example, to set the CONFIG variable:
+  # the end of a rake command line. For example, to set GAE_CONFIG:
   #
-  #     bundle exec rake appengine:exec bundle exec rake db:migrate CONFIG=myservice.yaml
+  #     bundle exec rake appengine:exec bundle exec rake db:migrate GAE_CONFIG=myservice.yaml
   #
   # The following environment variable parameters are supported:
   #
-  # #### CONFIG
+  # #### GAE_CONFIG
   #
   # Path to the App Engine config file, used when your app has multiple
   # services, or the config file is otherwise not called `./app.yaml`. The
   # config file is used to determine the name of the App Engine service.
   #
-  # #### SERVICE
+  # #### GAE_SERVICE
   #
-  # Name of the service to be used. If both `CONFIG` and `SERVICE` are
-  # provided, the latter takes precedence.
+  # Name of the service to be used. If both `GAE_CONFIG` and `GAE_SERVICE` are
+  # provided and imply different service names, an error will be raised.
   #
-  # #### VERSION
+  # #### GAE_VERSION
   #
   # The version of the service, used to identify which application image to
   # use to run your command. If not specified, uses the most recently created
   # version, regardless of whether that version is actually serving traffic.
   #
-  # #### TIMEOUT
+  # #### GAE_TIMEOUT
   #
   # Amount of time to wait before appengine:exec terminates the command.
   # Expressed as a string formatted like: "2h15m10s". Default is "15m".
   #
-  # ## Rake appengine:exec:[remote-task]
-  #
-  # This is a convenience shorthand for running commands that are themselves
-  # rake tasks. For example:
-  #
-  #     bundle exec rake appengine:exec:db:migrate
-  #
-  # is shorthand for
-  #
-  #     bundle exec rake appengine:exec bundle exec rake db:migrate
-  #
   module Tasks
 
-    CONFIG_ENV = "CONFIG"
-    SERVICE_ENV = "SERVICE"
-    VERSION_ENV = "VERSION"
-    TIMEOUT_ENV = "TIMEOUT"
+    CONFIG_ENV = "GAE_CONFIG"
+    SERVICE_ENV = "GAE_SERVICE"
+    VERSION_ENV = "GAE_VERSION"
+    TIMEOUT_ENV = "GAE_TIMEOUT"
 
     @defined = false
 
@@ -112,30 +101,22 @@ module AppEngine
         end
         @defined = true
 
-        setup_verify_gcloud_task
         setup_exec_task
-        setup_exec_prefix
       end
 
       private
 
-      def setup_verify_gcloud_task
-        ::Rake::Task.define_task "appengine:verify_gcloud" do
-          Util::Gcloud.verify!
-        end
-      end
-
       def setup_exec_task
         ::Rake.application.last_description =
             "Execute the given command in Google App Engine."
-        ::Rake::Task.define_task \
-            "appengine:exec", [:cmd] => "appengine:verify_gcloud" do
-            |t, args|
+        ::Rake::Task.define_task "appengine:exec", [:cmd] do |t, args|
+          Util::Gcloud.verify!
           if args[:cmd]
             command = ::Shellwords.split args[:cmd]
           else
-            ::ARGV.each { |a| ::Rake::Task.define_task a.to_sym do ; end }
-            command = ::ARGV[1..-1]
+            i = ::ARGV.index{ |a| a.to_s == "appengine:exec" } + 1
+            i += 1 while ::ARGV[i] =~ /^-/
+            command = ::ARGV[i..-1]
           end
           app_exec = Exec.new \
               command,
@@ -144,27 +125,7 @@ module AppEngine
               version: ::ENV[VERSION_ENV],
               timeout: ::ENV[TIMEOUT_ENV]
           app_exec.start
-        end
-      end
-
-      def setup_exec_prefix
-        ::Rake::Task.create_rule \
-            %r(appengine:exec:) => "appengine:verify_gcloud" do
-            |t, args|
-          subtask = t.name.sub %r(^appengine:exec:), ""
-          env_args = []
-          ::ARGV[1..-1].each do |arg|
-            env_args << arg if arg =~ /^\w+=/
-          end
-          app_exec = Exec.new_rake_task \
-              subtask,
-              args: args.to_a,
-              env_args: env_args,
-              service: ::ENV[SERVICE_ENV],
-              config_path: ::ENV[CONFIG_ENV],
-              version: ::ENV[VERSION_ENV],
-              timeout: ::ENV[TIMEOUT_ENV]
-          app_exec.start
+          exit
         end
       end
 

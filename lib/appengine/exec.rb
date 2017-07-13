@@ -150,6 +150,16 @@ module AppEngine
       end
     end
 
+    ##
+    # Exception raised when an explicitly-specified service name conflicts with
+    # a config-specified service name.
+    #
+    class ServiceNameConflict < UsageError
+      def initialize
+        super "Service name conflicts with config file"
+      end
+    end
+
 
     class << self
 
@@ -289,16 +299,22 @@ module AppEngine
         @command = ::Shellwords.parse @command.to_s
       end
 
-      @service ||= begin
-        config_path = @config_path || Exec.default_config_path
-        config = ::YAML.load_file config_path
-        config["service"] || Exec.default_service
-      rescue ::Errno::ENOENT
-        raise ConfigFileNotFound
-      rescue
-        raise BadConfigFileFormat
+      config_service = nil
+      if @config_path || !@service
+        config_service ||= begin
+          config_path = @config_path || Exec.default_config_path
+          ::YAML.load_file(config_path)["service"] || Exec.default_service
+        rescue ::Errno::ENOENT
+          raise ConfigFileNotFound
+        rescue
+          raise BadConfigFileFormat
+        end
+      end
+      if @service && config_service && @service != config_service
+        raise ServiceNameConflict
       end
 
+      @service ||= config_service
       @version ||= latest_version @service
       @timeout ||= Exec.default_timeout
       @wrapper_image ||= Exec.default_wrapper_image
