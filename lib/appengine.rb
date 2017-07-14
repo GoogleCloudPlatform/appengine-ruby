@@ -13,7 +13,7 @@
 # limitations under the License.
 ;
 
-# == Google AppEngine integration
+# # Google AppEngine integration
 #
 # The AppEngine module includes optional tools helping Ruby applications to
 # integrate more closely with the Google App Engine environment.

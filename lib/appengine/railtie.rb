@@ -23,6 +23,7 @@ module AppEngine
   # environment.
   #
   # Specifically:
+  #
   # * It installs the Stackdriver instrumentation, providing application
   #   diagnostics to the project's Stackdriver account.
   # * It installs the rake tasks, providing the ability to execute commands

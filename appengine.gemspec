@@ -48,4 +48,5 @@ require 'appengine/version'
   spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "rake", "~> 11.0"
   spec.add_development_dependency "rdoc", "~> 4.2"
+  spec.add_development_dependency "yard", "~> 0.9"
 end

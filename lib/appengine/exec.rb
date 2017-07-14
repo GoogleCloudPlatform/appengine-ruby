@@ -92,7 +92,7 @@ module AppEngine
   # You may also provide a timeout, which is the length of time that App
   # Engine execution will allow your command to run before it is considered to
   # have stalled and is terminated. The timeout should be a string of the form
-  # `2h15m10s`. The default is `15m`.
+  # `2h15m10s`. The default is `10m`.
   #
   # ## Resource usage and billing
   #
@@ -109,7 +109,7 @@ module AppEngine
   #
   class Exec
 
-    @default_timeout = "15m".freeze
+    @default_timeout = "10m".freeze
     @default_service = "default".freeze
     @default_config_path = "./app.yaml".freeze
     @default_wrapper_image = "gcr.io/google-appengine/exec-wrapper".freeze

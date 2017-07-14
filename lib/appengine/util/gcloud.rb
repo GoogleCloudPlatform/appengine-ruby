@@ -177,7 +177,7 @@ module AppEngine
         # as a string.
         #
         # @param args [Array<String>] The gcloud args.
-        # @param [String] The command output.
+        # @return [String] The command output.
         #
         def capture args
           execute args, capture: true

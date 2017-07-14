@@ -83,9 +83,13 @@ module AppEngine
   #
   module Tasks
 
+    ## @private
     CONFIG_ENV = "GAE_CONFIG"
+    ## @private
     SERVICE_ENV = "GAE_SERVICE"
+    ## @private
     VERSION_ENV = "GAE_VERSION"
+    ## @private
     TIMEOUT_ENV = "GAE_TIMEOUT"
 
     @defined = false
