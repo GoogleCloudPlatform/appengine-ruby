@@ -126,18 +126,22 @@ module AppEngine
     # Exception raised when the App Engine config file could not be found.
     #
     class ConfigFileNotFound < UsageError
-      def initialize
-        super "Config file not found"
+      def initialize config_path
+        @config_path = config_path
+        super "Config file #{config_path} not found."
       end
+      attr_reader :config_path
     end
 
     ##
     # Exception raised when the App Engine config file could not be parsed.
     #
     class BadConfigFileFormat < UsageError
-      def initialize
-        super "Bad config file format"
+      def initialize config_path
+        @config_path = config_path
+        super "Config file #{config_path} malformed."
       end
+      attr_reader :config_path
     end
 
     ##
@@ -145,9 +149,17 @@ module AppEngine
     # versions at all could be found for the given service.
     #
     class NoSuchVersion < UsageError
-      def initialize
-        super "No such service version"
+      def initialize service, version=nil
+        @service = service
+        @version = version
+        if version
+          super "No such version \"#{version}\" for service \"#{service}\""
+        else
+          super "No versions found for service \"#{service}\""
+        end
       end
+      attr_reader :service
+      attr_reader :version
     end
 
     ##
@@ -155,9 +167,15 @@ module AppEngine
     # a config-specified service name.
     #
     class ServiceNameConflict < UsageError
-      def initialize
+      def initialize service_name, config_name, config_path
+        @service_name = service_name
+        @config_name = config_name
+        @config_path = config_path
         super "Service name conflicts with config file"
       end
+      attr_reader :service_name
+      attr_reader :config_name
+      attr_reader :config_path
     end
 
 
@@ -299,19 +317,19 @@ module AppEngine
         @command = ::Shellwords.parse @command.to_s
       end
 
-      config_service = nil
+      config_service = config_path = nil
       if @config_path || !@service
-        config_service ||= begin
+        config_service = begin
           config_path = @config_path || Exec.default_config_path
           ::YAML.load_file(config_path)["service"] || Exec.default_service
         rescue ::Errno::ENOENT
-          raise ConfigFileNotFound
+          raise ConfigFileNotFound.new config_path
         rescue
-          raise BadConfigFileFormat
+          raise BadConfigFileFormat.new config_path
         end
       end
       if @service && config_service && @service != config_service
-        raise ServiceNameConflict
+        raise ServiceNameConflict.new @service, config_service, config_path
       end
 
       @service ||= config_service
@@ -369,7 +387,7 @@ module AppEngine
           "--limit=1"],
           capture: true, assert: false
       result = result.split.first
-      raise NoSuchVersion unless result
+      raise NoSuchVersion.new(service) unless result
       result
     end
 
@@ -394,7 +412,7 @@ module AppEngine
           "--format=json"],
           capture: true, assert: false
       result.strip!
-      raise NoSuchVersion if result.empty?
+      raise NoSuchVersion.new(service, version) if result.empty?
       ::JSON.parse result
     end
 

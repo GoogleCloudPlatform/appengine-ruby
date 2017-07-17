@@ -37,4 +37,6 @@ require "yard"
 require "yard/rake/yardoc_task"
 YARD::Rake::YardocTask.new
 
+load "lib/appengine/tasks.rb"
+
 task :default => [:test]
