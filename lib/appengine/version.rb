@@ -16,6 +16,6 @@
 module AppEngine
 
   # The current version of this gem, as a string.
-  VERSION = '0.4.0'.freeze
+  VERSION = '0.4.0.1'.freeze
 
 end

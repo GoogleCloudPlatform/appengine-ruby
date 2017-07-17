@@ -39,6 +39,7 @@ module AppEngine
   #
   # When App Engine execution runs your command, it provides access to key
   # elements of the App Engine environment, including:
+  #
   # * The same runtime that runs your application in App Engine itself.
   # * Any Cloud SQL connections requested by your application.
   # * Any environment variables set by your application.

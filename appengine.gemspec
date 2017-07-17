@@ -36,8 +36,8 @@ require 'appengine/version'
   spec.license = "Apache 2.0"
   spec.homepage = "https://github.com/GoogleCloudPlatform/appengine-ruby"
 
-  spec.files = ::Dir.glob("lib/**/*.rb") + ::Dir.glob("test/**/*.rb") +
-    ::Dir.glob("*.md") + ["LICENSE", "Rakefile"]
+  spec.files = ::Dir.glob("lib/**/*.rb") +
+    ::Dir.glob("*.md") + ["LICENSE", "Rakefile", ".yardopts"]
   spec.required_ruby_version = ">= 2.0.0"
   spec.require_paths = ["lib"]
 
