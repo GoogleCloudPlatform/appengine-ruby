@@ -2,6 +2,10 @@
 
 This is the change history for the appengine gem.
 
+## v0.4.1 (2017-08-10)
+
+*   Removed squiggly heredocs to regain compatibility with Ruby 2.2.
+
 ## v0.4.0 (2017-07-17)
 
 *   Provided rake tasks to access App Engine remote execution.

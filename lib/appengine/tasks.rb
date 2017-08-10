@@ -129,7 +129,7 @@ module AppEngine
           else
             i = (::ARGV.index{ |a| a.to_s == "--" } || -1) + 1
             if i == 0
-              report_error <<~MESSAGE
+              report_error <<-MESSAGE
 No command provided for appengine:exec.
 Did you remember to delimit it with two dashes? e.g.
   bundle exec rake appengine:exec -- bundle exec ruby myscript.rb
@@ -155,7 +155,7 @@ For detailed usage instructions, provide two dashes but no command:
       end
 
       def show_usage
-        puts <<~USAGE
+        puts <<-USAGE
 rake appengine:exec
 
 This Rake task executes a given command in the context of an App Engine
@@ -226,20 +226,20 @@ https://github.com/GoogleCloudPlatform/appengine-ruby
       def verify_gcloud_and_report_errors
         Util::Gcloud.verify!
       rescue Gcloud::BinaryNotFound
-        report_error <<~MESSAGE
+        report_error <<-MESSAGE
 Could not find the `gcloud` binary in your system path.
 This tool requires the Google Cloud SDK. To download and install it,
 visit https://cloud.google.com/sdk/downloads
         MESSAGE
       rescue Gcloud::GcloudNotAuthenticated
-        report_error <<~MESSAGE
+        report_error <<-MESSAGE
 The gcloud authorization has not been completed. If you have not yet
 initialized the Google Cloud SDK, we recommend running the `gcloud init`
 command as described at https://cloud.google.com/sdk/docs/initializing
 Alternately, you may log in directly by running `gcloud auth login`.
         MESSAGE
       rescue Gcloud::ProjectNotSet
-        report_error <<~MESSAGE
+        report_error <<-MESSAGE
 The gcloud project configuration has not been set. If you have not yet
 initialized the Google Cloud SDK, we recommend running the `gcloud init`
 command as described at https://cloud.google.com/sdk/docs/initializing
@@ -251,7 +251,7 @@ running `gcloud config set project <project-name>`.
       def start_and_report_errors app_exec
         app_exec.start
       rescue Exec::ConfigFileNotFound => ex
-        report_error <<~MESSAGE
+        report_error <<-MESSAGE
 Could not determine which service should run this command because the App
 Engine config file "#{ex.config_path}" was not found.
 Specify the config file using the GAE_CONFIG argument. e.g.
@@ -260,7 +260,7 @@ Alternately, you may specify a service name directly with GAE_SERVICE. e.g.
   bundle exec rake appengine:exec GAE_SERVICE=myservice -- myscript.sh
 MESSAGE
       rescue Exec::BadConfigFileFormat => ex
-        report_error <<~MESSAGE
+        report_error <<-MESSAGE
 Could not determine which service should run this command because the App
 Engine config file "#{ex.config_path}" was malformed.
 It must be a valid YAML file.
@@ -271,13 +271,13 @@ Alternately, you may specify a service name directly with GAE_SERVICE. e.g.
 MESSAGE
       rescue Exec::NoSuchVersion => ex
         if ex.version
-          report_error <<~MESSAGE
+          report_error <<-MESSAGE
 Could not find version "#{ex.version}" of service "#{ex.service}".
 Please double-check the version exists. To use the most recent version by
 default, omit the GAE_VERSION argument.
 MESSAGE
         else
-          report_error <<~MESSAGE
+          report_error <<-MESSAGE
 Could not find any versions of service "#{ex.service}".
 Please double-check that you have deployed this service. If you want to run
 a command against a different service, you may provide a GAE_CONFIG argument
@@ -286,7 +286,7 @@ a service directly.
 MESSAGE
         end
       rescue Exec::ServiceNameConflict => ex
-        report_error <<~MESSAGE
+        report_error <<-MESSAGE
 The explicit service name "#{ex.service_name}" was requested
 but conflicts with the service "#{ex.config_name}" from the
 config file "#{ex.config_path}"
