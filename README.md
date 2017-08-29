@@ -32,6 +32,8 @@ To install, include the "appengine" gem in your Gemfile. e.g.
 
     gem "appengine"
 
+## Rails Quick Start
+
 If you are running [Ruby On Rails](http://rubyonrails.org/) 4.0 or later, this
 gem will automatically install a Railtie that provides its capabilities. You
 may need to include the line:
@@ -41,8 +43,17 @@ may need to include the line:
 in your `config/application.rb` file if you aren't already requiring all
 bundled gems.
 
-If you are running a different web framework, you may need to add some
-initialization code to activate the features listed below.
+## Rack Quick Start
+
+If you are rack-based web framework you can need to include the line:
+
+   require "appengine" 
+
+You can add the Rake tasks to your application by adding the following to your Rakefile:
+
+  require "appengine/tasks"
+
+To use the Stackdriver integration you must follow the rack middleware steps for the individual gems listed below.
 
 ## Logging and monitoring
 
