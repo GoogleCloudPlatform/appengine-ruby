@@ -2,6 +2,10 @@
 
 This is the change history for the appengine gem.
 
+## v0.4.2 (2017-09-11)
+
+*   Fixed file permissions.
+
 ## v0.4.1 (2017-08-10)
 
 *   Removed squiggly heredocs to regain compatibility with Ruby 2.2.
