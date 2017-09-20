@@ -2,6 +2,10 @@
 
 This is the change history for the appengine gem.
 
+## v0.4.3 (2017-09-20)
+
+*   Fixed incorrect namespace in the handler for gcloud errors.
+
 ## v0.4.2 (2017-09-11)
 
 *   Fixed file permissions.
