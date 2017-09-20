@@ -225,20 +225,20 @@ https://github.com/GoogleCloudPlatform/appengine-ruby
 
       def verify_gcloud_and_report_errors
         Util::Gcloud.verify!
-      rescue Gcloud::BinaryNotFound
+      rescue Util::Gcloud::BinaryNotFound
         report_error <<-MESSAGE
 Could not find the `gcloud` binary in your system path.
 This tool requires the Google Cloud SDK. To download and install it,
 visit https://cloud.google.com/sdk/downloads
         MESSAGE
-      rescue Gcloud::GcloudNotAuthenticated
+      rescue Util::Gcloud::GcloudNotAuthenticated
         report_error <<-MESSAGE
 The gcloud authorization has not been completed. If you have not yet
 initialized the Google Cloud SDK, we recommend running the `gcloud init`
 command as described at https://cloud.google.com/sdk/docs/initializing
 Alternately, you may log in directly by running `gcloud auth login`.
         MESSAGE
-      rescue Gcloud::ProjectNotSet
+      rescue Util::Gcloud::ProjectNotSet
         report_error <<-MESSAGE
 The gcloud project configuration has not been set. If you have not yet
 initialized the Google Cloud SDK, we recommend running the `gcloud init`
