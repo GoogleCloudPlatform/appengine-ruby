@@ -78,7 +78,7 @@ module AppEngine
         #
         def binary_path
           unless defined? @binary_path
-            @binary_path = `which gcloud`.strip
+            Gem.win_platform? ? @binary_path = 'gcloud' : @binary_path = `which gcloud`.strip
             @binary_path = nil if @binary_path.empty?
           end
           @binary_path
@@ -108,7 +108,7 @@ module AppEngine
         def current_project
           unless defined? @current_project
             @current_project = execute [
-              "config", "list", "core/project", "--format=value(core.project)"
+              'config', 'list', 'core/project', '--format="value(core.project)"'
             ], capture: true
             @current_project = nil if @current_project.empty?
           end
@@ -142,7 +142,7 @@ module AppEngine
         def verify!
           binary_path!
           current_project!
-          auths = execute ["auth", "list", "--format=value(account)"],
+          auths = execute ["auth", "list", '--format=value("account)"'],
               capture: true
           raise GcloudNotAuthenticated if auths.empty?
         end
@@ -162,7 +162,8 @@ module AppEngine
         #     depending on the value of the `capture` parameter.
         #
         def execute args, echo: false, capture: false, assert: true
-          joined_args = ::Shellwords.join args
+          Gem.win_platform? ? joined_args = args.join(" ") : joined_args = ::Shellwords.join(args)
+
           cmd = "#{binary_path!} #{joined_args}"
           puts cmd if echo
           result = capture ? `#{cmd}` : system(cmd)
