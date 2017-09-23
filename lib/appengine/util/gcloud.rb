@@ -78,8 +78,12 @@ module AppEngine
         #
         def binary_path
           unless defined? @binary_path
-            Gem.win_platform? ? @binary_path = 'gcloud' : @binary_path = `which gcloud`.strip
-            @binary_path = nil if @binary_path.empty?
+            if Gem.win_platform?
+              @binary_path = `where gcloud` == '' ? nil : 'gcloud'
+            else
+              @binary_path = `which gcloud`.strip
+              @binary_path = nil if @binary_path.empty?
+            end
           end
           @binary_path
         end
