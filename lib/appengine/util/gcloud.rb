@@ -166,7 +166,7 @@ module AppEngine
         #     depending on the value of the `capture` parameter.
         #
         def execute args, echo: false, capture: false, assert: true
-          Gem.win_platform? ? joined_args = args.join(" ") : joined_args = ::Shellwords.join(args)
+          joined_args = Gem.win_platform? ? args.join(" ") : Shellwords.join(args)
 
           cmd = "#{binary_path!} #{joined_args}"
           puts cmd if echo
