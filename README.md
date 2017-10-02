@@ -32,7 +32,9 @@ To install, include the "appengine" gem in your Gemfile. e.g.
 
     gem "appengine"
 
-## Rails Quick Start
+## Quick Start
+
+### Rails Quick Start
 
 If you are running [Ruby On Rails](http://rubyonrails.org/) 4.0 or later, this
 gem will automatically install a Railtie that provides its capabilities. You
@@ -43,7 +45,7 @@ may need to include the line:
 in your `config/application.rb` file if you aren't already requiring all
 bundled gems.
 
-## Rack Quick Start
+### Rack Quick Start
 
 If you are running a different Rack-based web framework, include the following
 line in your main Ruby file or `config.ru`:
@@ -57,13 +59,26 @@ Then, to activate Stackdriver instrumentation, add the following middleware:
     use Google::Cloud::Trace::Middleware
     use Google::Cloud::Debugger::Middleware
 
-You can add the Rake tasks to your application by adding the following to your Rakefile:
+You can add the Rake tasks to your application by adding the following to your
+Rakefile:
 
     require "appengine/tasks"
 
-To use the Stackdriver integration you must follow the rack middleware steps for the individual gems listed below.
+### Necessary permissions for remote execution rake tasks
 
-## Logging and monitoring
+If you are using the `appengine:exec` rake task, you may need to grant
+additional permissions to the Cloud Container Builder service account that
+runs the task, especially if you are using Cloud SQL (which is not covered by
+the default permissions granted to the account). If your task is failing with
+authorization errors, pen the
+[IAM tab](https://pantheon.corp.google.com/iam-admin/iam/project) of the
+cloud console, select your project, and find the service account with the name
+`[your-project-number]@cloudbuild.gserviceaccount.com`. Add the Project Editor
+role to this service account.
+
+## Using this library
+
+### Logging and monitoring
 
 This library automatically installs the "stackdriver" gem, which instruments
 your application to report logs, unhandled exceptions, and latency traces to
@@ -73,16 +88,19 @@ monitoring features of Google App Engine, see:
 * [google-cloud-logging instrumentation](http://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-logging/latest/guides/instrumentation)
 * [google-cloud-error_reporting instrumentation](http://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-error_reporting/latest/guides/instrumentation)
 * [google-cloud-trace instrumentation](http://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-trace/latest/guides/instrumentation)
+* [google-cloud-debugger instrumentation](http://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud-debugger/latest/guides/instrumentation)
 
 Rails applications automatically activate this instrumentation when the gem
 is present. You may opt out of individual services by providing appropriate
 Rails configuration. See {AppEngine::Railtie} for more information.
 
 Non-Rails applications must provide initialization code to activate this
-instrumentation, typically by installing a Rack middleware. See the individual
-service documentation links above for more information.
+instrumentation, typically by installing a Rack middleware. You can find the
+basic code for installing these middlewares in the Rack Quick Start section
+above. See the individual service documentation links above for more
+information and configuration options.
 
-## App Engine remote execution
+### App Engine remote execution
 
 This library provides rake tasks for App Engine remote execution, allowing
 App Engine applications to perform on-demand tasks in the App Engine
@@ -104,6 +122,11 @@ See {AppEngine::Tasks} for more information on running the rake tasks. The
 tasks are available automatically in Rails applications when the gem is
 present. Non-Rails applications may install the tasks by adding the line
 `require "appengine/tasks"` to the `Rakefile`.
+
+Note that you may need to grant additional roles to the Container Builder
+service account that runs your tasks. If your task is failing with API
+authorization errors, try granting the Project Editor role to the CloudBuild
+service account.
 
 ## Development and support
 
