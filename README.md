@@ -45,13 +45,21 @@ bundled gems.
 
 ## Rack Quick Start
 
-If you are rack-based web framework you can need to include the line:
+If you are running a different Rack-based web framework, include the following
+line in your main Ruby file or `config.ru`:
 
-   require "appengine" 
+    require "appengine"
+
+Then, to activate Stackdriver instrumentation, add the following middleware:
+
+    use Google::Cloud::Logging::Middleware
+    use Google::Cloud::ErrorReporting::Middleware
+    use Google::Cloud::Trace::Middleware
+    use Google::Cloud::Debugger::Middleware
 
 You can add the Rake tasks to your application by adding the following to your Rakefile:
 
-  require "appengine/tasks"
+    require "appengine/tasks"
 
 To use the Stackdriver integration you must follow the rack middleware steps for the individual gems listed below.
 
