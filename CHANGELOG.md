@@ -2,6 +2,10 @@
 
 This is the change history for the appengine gem.
 
+## v0.4.4 (2017-10-03)
+
+*   Windows compatibility for appengine:exec task. (gkaykck)
+
 ## v0.4.3 (2017-09-20)
 
 *   Fixed incorrect namespace in the handler for gcloud errors.
