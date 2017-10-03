@@ -112,7 +112,7 @@ module AppEngine
         def current_project
           unless defined? @current_project
             @current_project = execute [
-              'config', 'list', 'core/project', '--format="value(core.project)"'
+              "config", "list", "core/project", "--format=value(core.project)"
             ], capture: true
             @current_project = nil if @current_project.empty?
           end
@@ -146,7 +146,7 @@ module AppEngine
         def verify!
           binary_path!
           current_project!
-          auths = execute ["auth", "list", '--format=value("account)"'],
+          auths = execute ["auth", "list", "--format=value(account)"],
               capture: true
           raise GcloudNotAuthenticated if auths.empty?
         end

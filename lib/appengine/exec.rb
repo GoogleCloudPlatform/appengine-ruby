@@ -15,6 +15,7 @@
 
 require "yaml"
 require "json"
+require "shellwords"
 
 require "appengine/util/gcloud"
 
@@ -113,7 +114,7 @@ module AppEngine
     @default_timeout = "10m".freeze
     @default_service = "default".freeze
     @default_config_path = "./app.yaml".freeze
-    @default_wrapper_image = "gcr.io/google-appengine/exec-wrapper".freeze
+    @default_wrapper_image = "gcr.io/google-appengine/exec-wrapper:latest".freeze
 
 
     ##
