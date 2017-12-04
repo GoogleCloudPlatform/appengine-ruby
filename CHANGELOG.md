@@ -2,6 +2,11 @@
 
 This is the change history for the appengine gem.
 
+## v0.4.5 (2017-12-04)
+
+*   Ensure tempfile is required when needed.
+*   Update stackdriver dependency to 0.11.
+
 ## v0.4.4 (2017-10-03)
 
 *   Windows compatibility for appengine:exec task. (gkaykck)

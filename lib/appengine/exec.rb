@@ -16,6 +16,7 @@
 require "yaml"
 require "json"
 require "shellwords"
+require "tempfile"
 
 require "appengine/util/gcloud"
 
