@@ -249,13 +249,14 @@ module AppEngine
     #     `AppEngine::Exec.default_timeout`.
     #
     def initialize command,
-                   service: nil, config_path: nil, version: nil, timeout: nil
+                   service: nil, config_path: nil, version: nil, timeout: nil,
+                   wrapper_image: nil
       @command = command
       @service = service
       @config_path = config_path
       @version = version
       @timeout = timeout
-      @wrapper_image = nil
+      @wrapper_image = wrapper_image
 
       yield self if block_given?
     end

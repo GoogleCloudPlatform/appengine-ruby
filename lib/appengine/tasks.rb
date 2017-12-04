@@ -98,6 +98,8 @@ module AppEngine
     VERSION_ENV = "GAE_VERSION"
     ## @private
     TIMEOUT_ENV = "GAE_TIMEOUT"
+    ## @private
+    WRAPPER_IMAGE_ENV = "GAE_EXEC_WRAPPER_IMAGE"
 
     @defined = false
 
@@ -148,7 +150,8 @@ For detailed usage instructions, provide two dashes but no command:
               service: ::ENV[SERVICE_ENV],
               config_path: ::ENV[CONFIG_ENV],
               version: ::ENV[VERSION_ENV],
-              timeout: ::ENV[TIMEOUT_ENV]
+              timeout: ::ENV[TIMEOUT_ENV],
+              wrapper_image: ::ENV[WRAPPER_IMAGE_ENV]
           start_and_report_errors app_exec
           exit
         end
