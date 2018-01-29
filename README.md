@@ -70,7 +70,7 @@ If you are using the `appengine:exec` rake task, you may need to grant
 additional permissions to the Cloud Container Builder service account that
 runs the task, especially if you are using Cloud SQL (which is not covered by
 the default permissions granted to the account). If your task is failing with
-authorization errors, pen the
+authorization errors, open the
 [IAM tab](https://pantheon.corp.google.com/iam-admin/iam/project) of the
 cloud console, select your project, and find the service account with the name
 `[your-project-number]@cloudbuild.gserviceaccount.com`. Add the Project Editor
