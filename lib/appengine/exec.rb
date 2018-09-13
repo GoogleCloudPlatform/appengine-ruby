@@ -300,7 +300,7 @@ module AppEngine
         ::JSON.dump config, file
         file.flush
         Util::Gcloud.execute [
-            "container", "builds", "submit",
+            "builds", "submit",
             "--no-source",
             "--config=#{file.path}",
             "--timeout=#{@timeout}"]
