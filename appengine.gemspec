@@ -42,11 +42,11 @@ require 'appengine/version'
   spec.require_paths = ["lib"]
 
   spec.add_dependency "google-cloud-env", "~> 1.0"
-  spec.add_dependency "stackdriver", "~> 0.11"
+  spec.add_dependency "stackdriver", "~> 0.15"
 
-  spec.add_development_dependency "bundler", "~> 1.15"
+  spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "minitest", "~> 5.0"
-  spec.add_development_dependency "rake", "~> 11.0"
-  spec.add_development_dependency "rdoc", "~> 4.2"
+  spec.add_development_dependency "rake", "~> 12.0"
+  spec.add_development_dependency "rdoc", "~> 6.0"
   spec.add_development_dependency "yard", "~> 0.9"
 end

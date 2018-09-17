@@ -5,6 +5,7 @@ This is the change history for the appengine gem.
 ## v0.4.6 (2018-09-17)
 
 *   Use gcloud builds submit instead of gcloud container builds submit. (tbpg)
+*   Update stackdriver dependency to 0.15.
 
 ## v0.4.5 (2017-12-04)
 
