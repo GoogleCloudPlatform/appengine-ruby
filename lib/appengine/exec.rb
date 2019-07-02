@@ -355,7 +355,7 @@ module AppEngine
     def build_config command, image, env_variables, cloud_sql_instances
       args = ["-i", image]
       env_variables.each do |k, v|
-        args << "-e" << "#{k}=#{v}"
+        args << "-e" << "#{k}=#{v.gsub('$', '$$')}"
       end
       unless cloud_sql_instances.empty?
         cloud_sql_instances = Array(cloud_sql_instances)
