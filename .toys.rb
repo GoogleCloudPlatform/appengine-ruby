@@ -1,4 +1,4 @@
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,9 +13,20 @@
 # limitations under the License.
 ;
 
-module AppEngine
+expand :clean, paths: ["pkg", "doc", ".yardoc", "tmp"]
 
-  # The current version of this gem, as a string.
-  VERSION = '0.5.0.dev'.freeze
+expand :minitest, libs: ["lib", "test"]
 
+expand :rubocop
+
+expand :yardoc do |t|
+  t.generate_output_flag = true
+  t.fail_on_warning = true
+  # t.fail_on_undocumented_objects = true
 end
+
+expand :gem_build
+
+expand :gem_build, name: "release", push_gem: true
+
+expand :gem_build, name: "install", install_gem: true

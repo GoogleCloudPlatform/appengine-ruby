@@ -33,10 +33,10 @@ require 'appengine/version'
       "provides rake tasks for managing your App Engine application, for " +
       "example to run production maintenance commands. " +
       "This gem is not required to deploy your Ruby application to App Engine."
-  spec.license = "Apache 2.0"
+  spec.license = "Apache-2.0"
   spec.homepage = "https://github.com/GoogleCloudPlatform/appengine-ruby"
 
-  spec.files = ::Dir.glob("lib/**/*.rb") +
+  spec.files = ::Dir.glob("lib/**/*.rb") + ::Dir.glob("data/**/*") +
     ::Dir.glob("*.md") + ["LICENSE", "Rakefile", ".yardopts"]
   spec.required_ruby_version = ">= 2.0.0"
   spec.require_paths = ["lib"]

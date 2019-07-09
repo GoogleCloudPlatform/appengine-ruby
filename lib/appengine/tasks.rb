@@ -86,10 +86,12 @@ module AppEngine
   # #### GAE_TIMEOUT
   #
   # Amount of time to wait before appengine:exec terminates the command.
-  # Expressed as a string formatted like: "2h15m10s". Default is "10m".
+  # Expressed as a string formatted like: `2h15m10s`. Default is `10m`.
   #
   module Tasks
 
+    ## @private
+    PROJECT_ENV = "GAE_PROJECT"
     ## @private
     CONFIG_ENV = "GAE_CONFIG"
     ## @private
@@ -147,6 +149,7 @@ For detailed usage instructions, provide two dashes but no command:
           end
           app_exec = Exec.new \
               command,
+              project: ::ENV[PROJECT_ENV],
               service: ::ENV[SERVICE_ENV],
               config_path: ::ENV[CONFIG_ENV],
               version: ::ENV[VERSION_ENV],
@@ -288,13 +291,6 @@ pointing to your App Engine config file, or a GAE_SERVICE argument to specify
 a service directly.
 MESSAGE
         end
-      rescue Exec::ServiceNameConflict => ex
-        report_error <<-MESSAGE
-The explicit service name "#{ex.service_name}" was requested
-but conflicts with the service "#{ex.config_name}" from the
-config file "#{ex.config_path}"
-You should specify either GAE_SERVICE or GAE_CONFIG but not both.
-MESSAGE
       end
 
       def report_error str
