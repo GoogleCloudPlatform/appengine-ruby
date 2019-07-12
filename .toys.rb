@@ -30,3 +30,25 @@ expand :gem_build
 expand :gem_build, name: "release", push_gem: true
 
 expand :gem_build, name: "install", install_gem: true
+
+tool "ci" do
+  desc "Run all CI checks"
+
+  include :exec, result_callback: :handle_result
+  include :terminal
+
+  def handle_result result
+    if result.success?
+      puts "** #{result.name} passed\n\n", :green, :bold
+    else
+      puts "** CI terminated: #{result.name} failed!", :red, :bold
+      exit 1
+    end
+  end
+
+  def run
+    exec_tool(["test"], name: "Tests")
+    # exec_tool(["rubocop"], name: "Style checker")
+    # exec_tool(["yardoc"], name: "Docs generation")
+  end
+end
