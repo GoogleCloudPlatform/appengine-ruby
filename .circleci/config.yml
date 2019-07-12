@@ -7,8 +7,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Toys
-          command: gem install toys
+          name: Install dependencies
+          command: gem install bundler && bundle install
       - run:
           name: CI on Ruby 2.3
           command: toys ci
@@ -19,8 +19,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Toys
-          command: gem install toys
+          name: Install dependencies
+          command: gem install bundler && bundle install
       - run:
           name: CI on Ruby 2.4
           command: toys ci
@@ -31,8 +31,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Toys
-          command: gem install toys
+          name: Install dependencies
+          command: gem install bundler && bundle install
       - run:
           name: CI on Ruby 2.5
           command: toys ci
@@ -43,8 +43,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Toys
-          command: gem install toys
+          name: Install dependencies
+          command: gem install bundler && bundle install
       - run:
           name: CI on Ruby 2.6
           command: toys ci
