@@ -2,6 +2,11 @@
 
 This is the change history for the appengine gem.
 
+## v0.5.0 (unreleased)
+
+*   appengine:exec supports the App Engine standard environment.
+*   appengine:exec supports setting the project via `GAE_PROJECT`.
+
 ## v0.4.6 (2018-09-17)
 
 *   Use gcloud builds submit instead of gcloud container builds submit. (tbpg)

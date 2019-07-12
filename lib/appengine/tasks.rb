@@ -21,9 +21,7 @@ require "shellwords"
 require "appengine/util/gcloud"
 require "appengine/exec"
 
-
 module AppEngine
-
   ##
   # # App Engine Rake Tasks.
   #
@@ -66,6 +64,16 @@ module AppEngine
   #
   # The following environment variable parameters are supported:
   #
+  # #### GAE_TIMEOUT
+  #
+  # Amount of time to wait before appengine:exec terminates the command.
+  # Expressed as a string formatted like: "2h15m10s". Default is "10m".
+  #
+  # #### GAE_PROJECT
+  #
+  # The ID of your Google Cloud project. If not specified, uses the current
+  # project from gcloud.
+  #
   # #### GAE_CONFIG
   #
   # Path to the App Engine config file, used when your app has multiple
@@ -74,24 +82,44 @@ module AppEngine
   #
   # #### GAE_SERVICE
   #
-  # Name of the service to be used. If both `GAE_CONFIG` and `GAE_SERVICE` are
-  # provided and imply different service names, an error will be raised.
+  # Name of the service to be used. Overrides any service name specified in
+  # your config file.
+  #
+  # #### GAE_EXEC_STRATEGY
+  #
+  # The execution strategy to use. Valid values are "deployment" (which is the
+  # default for App Engine Standard apps) and "cloud_build" (which is the
+  # default for App Engine Flexible apps).
+  #
+  # Normally you should leave the strategy set to the default. The main reason
+  # to change it is if your app runs on the Flexible Environment and talks to
+  # a database over a VPC (using a private IP address). The "cloud_build"
+  # strategy used by default for Flexible apps cannot connect to a VPC, so you
+  # should use "deployment" in this case. (But note that, otherwise, the
+  # "deployment" strategy is significantly slower for apps on the Flexible
+  # environment.)
   #
   # #### GAE_VERSION
   #
   # The version of the service, used to identify which application image to
   # use to run your command. If not specified, uses the most recently created
   # version, regardless of whether that version is actually serving traffic.
+  # Applies only to the "cloud_build" strategy. (The "deployment" strategy
+  # deploys its own temporary version of your app.)
   #
-  # #### GAE_TIMEOUT
+  # #### GAE_EXEC_WRAPPER_IMAGE
   #
-  # Amount of time to wait before appengine:exec terminates the command.
-  # Expressed as a string formatted like: `2h15m10s`. Default is `10m`.
+  # The fully-qualified name of the wrapper image to use. (This is a Docker
+  # image that emulates the App Engine environment in Google Cloud Build for
+  # the "cloud_build" strategy, and applies only to that strategy.) Normally,
+  # you should not override this unless you are testing a new wrapper.
+  #
   #
   module Tasks
-
     ## @private
     PROJECT_ENV = "GAE_PROJECT"
+    ## @private
+    STRATEGY_ENV = "GAE_EXEC_STRATEGY"
     ## @private
     CONFIG_ENV = "GAE_CONFIG"
     ## @private
@@ -106,7 +134,6 @@ module AppEngine
     @defined = false
 
     class << self
-
       ##
       # @private
       # Define rake tasks.
@@ -147,14 +174,14 @@ For detailed usage instructions, provide two dashes but no command:
               exit
             end
           end
-          app_exec = Exec.new \
-              command,
-              project: ::ENV[PROJECT_ENV],
-              service: ::ENV[SERVICE_ENV],
-              config_path: ::ENV[CONFIG_ENV],
-              version: ::ENV[VERSION_ENV],
-              timeout: ::ENV[TIMEOUT_ENV],
-              wrapper_image: ::ENV[WRAPPER_IMAGE_ENV]
+          app_exec = Exec.new command,
+                              project: ::ENV[PROJECT_ENV],
+                              service: ::ENV[SERVICE_ENV],
+                              config_path: ::ENV[CONFIG_ENV],
+                              version: ::ENV[VERSION_ENV],
+                              timeout: ::ENV[TIMEOUT_ENV],
+                              wrapper_image: ::ENV[WRAPPER_IMAGE_ENV],
+                              strategy: ::ENV[STRATEGY_ENV]
           start_and_report_errors app_exec
           exit
         end
@@ -184,7 +211,8 @@ To display these usage instructions, provide two dashes but no command:
 
 You may customize the behavior of App Engine execution through a few
 enviroment variable parameters. These are set via the normal mechanism at
-the end of a rake command line. For example, to set GAE_CONFIG:
+the end of a rake command line but before the double dash. For example, to
+set GAE_CONFIG:
 
     bundle exec rake appengine:exec GAE_CONFIG=myservice.yaml -- bundle exec bin/rails db:migrate
 
@@ -192,6 +220,16 @@ Be sure to set these parameters before the double dash. Any arguments
 following the double dash are interpreted as part of the command itself.
 
 The following environment variable parameters are supported:
+
+GAE_TIMEOUT
+
+  Amount of time to wait before appengine:exec terminates the command.
+  Expressed as a string formatted like: "2h15m10s". Default is "10m".
+
+GAE_PROJECT
+
+  The ID of your Google Cloud project. If not specified, uses the current
+  project from gcloud.
 
 GAE_CONFIG
 
@@ -201,19 +239,37 @@ GAE_CONFIG
 
 GAE_SERVICE
 
-  Name of the service to be used. If both `GAE_CONFIG` and `GAE_SERVICE`
-  are provided and imply different service names, an error will be raised.
+  Name of the service to be used. Overrides any service name specified in
+  your config file.
+
+GAE_EXEC_STRATEGY
+
+  The execution strategy to use. Valid values are "deployment" (which is the
+  default for App Engine Standard apps) and "cloud_build" (which is the
+  default for App Engine Flexible apps).
+
+  Normally you should leave the strategy set to the default. The main reason
+  to change it is if your app runs on the Flexible Environment and talks to
+  a database over a VPC (using a private IP address). The "cloud_build"
+  strategy used by default for Flexible apps cannot connect to a VPC, so you
+  should use "deployment" in this case. (But note that, otherwise, the
+  "deployment" strategy is significantly slower for apps on the Flexible
+  environment.)
 
 GAE_VERSION
 
   The version of the service, used to identify which application image to
   use to run your command. If not specified, uses the most recently created
   version, regardless of whether that version is actually serving traffic.
+  Applies only to the "cloud_build" strategy. (The "deployment" strategy
+  deploys its own temporary version of your app.)
 
-GAE_TIMEOUT
+GAE_EXEC_WRAPPER_IMAGE
 
-  Amount of time to wait before appengine:exec terminates the command.
-  Expressed as a string formatted like: "2h15m10s". Default is "10m".
+  The fully-qualified name of the wrapper image to use. (This is a Docker
+  image that emulates the App Engine environment in Google Cloud Build for
+  the "cloud_build" strategy, and applies only to that strategy.) Normally,
+  you should not override this unless you are testing a new wrapper.
 
 This rake task is provided by the "appengine" gem. To make these tasks
 available, add the following line to your Rakefile:
@@ -291,17 +347,24 @@ pointing to your App Engine config file, or a GAE_SERVICE argument to specify
 a service directly.
 MESSAGE
         end
+      rescue Exec::NoDefaultProject => ex
+        report_error <<-MESSAGE
+Could not get the default project from gcloud.
+Please either set the current project using
+  gcloud config set project my-project-id
+or specify the project by setting the GAE_PROJECT argument. e.g.
+  bundle exec rake appengine:exec GAE_PROJECT=my-project-id -- myscript.sh
+MESSAGE
+      rescue Exec::UsageError => ex
+        report_error ex.message
       end
 
       def report_error str
         ::STDERR.puts str
         exit 1
       end
-
     end
-
   end
 end
-
 
 ::AppEngine::Tasks.define

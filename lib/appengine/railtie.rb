@@ -13,9 +13,7 @@
 # limitations under the License.
 ;
 
-
 module AppEngine
-
   ##
   # # AppEngine Rails integration
   #
@@ -74,7 +72,6 @@ module AppEngine
   # disable debugging.
   #
   class Railtie < ::Rails::Railtie
-
     config.appengine = ::ActiveSupport::OrderedOptions.new
     config.appengine.define_tasks = true
 
@@ -83,7 +80,5 @@ module AppEngine
         require "appengine/tasks"
       end
     end
-
   end
-
 end

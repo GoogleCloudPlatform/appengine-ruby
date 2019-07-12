@@ -15,9 +15,7 @@
 
 require "google/cloud/env"
 
-
 module AppEngine
-
   ##
   # A convenience object that provides information on the Google Cloud
   # hosting environment. For example, you can call
@@ -34,5 +32,4 @@ module AppEngine
   # directly instead. See the documentation for the `google-cloud-env` gem.
   #
   Env = ::Google::Cloud.env
-
 end

@@ -15,16 +15,13 @@
 
 require "shellwords"
 
-
 module AppEngine
   module Util
-
     ##
     # A collection of utility functions and classes for interacting with an
     # installation of the gcloud SDK.
     #
     module Gcloud
-
       ##
       # Base class for gcloud related errors.
       #
@@ -68,7 +65,6 @@ module AppEngine
       end
 
       class << self
-
         ##
         # @private
         # Returns the path to the gcloud binary, or nil if the binary could
@@ -187,9 +183,7 @@ module AppEngine
         def capture args
           execute args, capture: true
         end
-
       end
     end
-
   end
 end

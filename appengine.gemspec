@@ -13,11 +13,9 @@
 # limitations under the License.
 ;
 
-
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'appengine/version'
-
+require "appengine/version"
 
 ::Gem::Specification.new do |spec|
   spec.name = "appengine"
@@ -41,7 +39,7 @@ require 'appengine/version'
   spec.required_ruby_version = ">= 2.0.0"
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "google-cloud-env", "~> 1.0"
+  spec.add_dependency "google-cloud-env", "~> 1.2"
   spec.add_dependency "stackdriver", "~> 0.15"
 
   spec.add_development_dependency "bundler", "~> 1.16"
