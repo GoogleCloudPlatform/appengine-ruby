@@ -1,11 +1,15 @@
 inherit_gem:
   google-style: google-style.yml
 
+Metrics/BlockLength:
+  Exclude:
+    - "appengine.gemspec"
 Metrics/ClassLength:
   Exclude:
     - "lib/appengine/exec.rb"
 Metrics/MethodLength:
   Exclude:
+    - "lib/appengine/exec.rb"
     - "lib/appengine/tasks.rb"
 Metrics/ModuleLength:
   Exclude:

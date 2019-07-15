@@ -702,7 +702,10 @@ module AppEngine
         delay = 0.0
         loop do
           sleep delay
-          data = query_data host, secret, outpos, errpos
+          uri = URI("http://#{host}/#{secret}")
+          uri.query = ::URI.encode_www_form outpos: outpos, errpos: errpos
+          response = http.request_get uri
+          data = ::JSON.parse response.body
           data["outlines"].each { |line| puts "[STDOUT] #{line}" }
           data["errlines"].each { |line| puts "[STDERR] #{line}" }
           outpos = data["outpos"]
@@ -712,24 +715,13 @@ module AppEngine
             http.request_post "/#{secret}/kill", ""
             return "timeout"
           end
-          delay = update_delay delay, data
+          if data["outlines"].empty? && data["errlines"].empty?
+            delay += 0.1
+            delay = 1.0 if delay > 1.0
+          else
+            delay = 0.0
+          end
         end
-      end
-    end
-
-    def query_data host, secret, outpos, errpos
-      uri = URI("http://#{host}/#{secret}")
-      uri.query = ::URI.encode_www_form outpos: outpos, errpos: errpos
-      response = http.request_get uri
-      ::JSON.parse response.body
-    end
-
-    def update_delay delay, data
-      if data["outlines"].empty? && data["errlines"].empty?
-        delay += 0.1
-        delay > 1.0 ? 1.0 : delay
-      else
-        0.0
       end
     end
 

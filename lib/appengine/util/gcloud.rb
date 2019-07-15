@@ -166,13 +166,13 @@ module AppEngine
         #     depending on the value of the `capture` parameter.
         #
         def execute args, echo: false, capture: false, assert: true
-          joined_args =
+          cmd_array = [binary_path!] + args
+          cmd =
             if Gem.win_platform?
-              args.join " "
+              cmd_array.join " "
             else
-              Shellwords.join args
+              Shellwords.join cmd_array
             end
-          cmd = "#{binary_path!} #{joined_args}"
           puts cmd if echo
           result = capture ? `#{cmd}` : system(cmd)
           code = $CHILD_STATUS.exitstatus
