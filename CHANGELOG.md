@@ -2,10 +2,13 @@
 
 This is the change history for the appengine gem.
 
-## v0.5.0 (unreleased)
+## v0.5.0 (2019-07-15)
 
 *   appengine:exec supports the App Engine standard environment.
 *   appengine:exec supports setting the project via `GAE_PROJECT`.
+*   Support for an alternate appengine:exec strategy for flexible environment apps that talk to a database via a private IP.
+*   Fix crash when the gcloud path includes directories with spaces.
+*   Escape `$` symbols in environment configs. (tpbowden)
 
 ## v0.4.6 (2018-09-17)
 
