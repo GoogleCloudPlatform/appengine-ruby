@@ -1,6 +1,9 @@
 Google App Engine Integration Tools
 ===================================
 
+[![CircleCI](https://circleci.com/gh/GoogleCloudPlatform/appengine-ruby.svg?style=svg)](https://circleci.com/gh/GoogleCloudPlatform/appengine-ruby)
+[![Gem Version](https://badge.fury.io/rb/appengine.svg)](https://badge.fury.io/rb/appengine)
+
 This repository contains the "appengine" gem, a collection of libraries and
 plugins for integrating Ruby apps with Google App Engine. It is not required
 for deploying a ruby application to Google App Engine, but it provides a
@@ -18,7 +21,7 @@ Currently, it includes:
 * Convenient access to environment information such as project ID and VM
   properties.
 
-Planned for the near future:
+Potential future directions:
 
 * Tools for generating "app.yaml" configuration files for Ruby applications.
 * Streamlined implementation of health checks and other lifecycle hooks.
@@ -64,17 +67,25 @@ Rakefile:
 
     require "appengine/tasks"
 
-### Necessary permissions for remote execution rake tasks
+### Setting up appengine:exec remote execution
 
-If you are using the `appengine:exec` rake task, you may need to grant
-additional permissions to the Cloud Container Builder service account that
-runs the task, especially if you are using Cloud SQL (which is not covered by
-the default permissions granted to the account). If your task is failing with
-authorization errors, open the
-[IAM tab](https://console.cloud.google.com/iam-admin/iam/project) of the
-cloud console, select your project, and find the service account with the name
-`[your-project-number]@cloudbuild.gserviceaccount.com`. Add the Project Editor
-role to this service account.
+This gem is commonly used for its `appengine:exec` Rake task that provides a
+way to run production tasks such as database migrations in the cloud. If you
+are getting started with this feature, you should read the documentation
+(available on the
+[AppEngine::Exec module](http://www.rubydoc.info/gems/appengine/AppEngine/Exec))
+carefully, for important tips. In particular:
+
+ *  The strategy used by the gem is different depending on whether your app is
+    deployed to the App Engine standard environment or flexible environment.
+    It is important to understand which strategy is in use, because it affects
+    which version of your application code is used to run the task, and various
+    other factors.
+ *  You may need to grant additional permissions to the service account that
+    runs the task. Again, the documentation will describe this in detail.
+ *  If your app is running on the flexible environment and uses a VPC (and
+    connects to your database via a private IP address), then you will need to
+    use a special configuration for the task.
 
 ## Using this library
 
@@ -92,7 +103,9 @@ monitoring features of Google App Engine, see:
 
 Rails applications automatically activate this instrumentation when the gem
 is present. You may opt out of individual services by providing appropriate
-Rails configuration. See {AppEngine::Railtie} for more information.
+Rails configuration. See
+[AppEngine::Railtie](http://www.rubydoc.info/gems/appengine/AppEngine/Railtie)
+for more information.
 
 Non-Rails applications must provide initialization code to activate this
 instrumentation, typically by installing a Rack middleware. You can find the
@@ -110,23 +123,18 @@ example, you could run a production database migration in a Rails app using:
 
     bundle exec rake appengine:exec -- bundle exec rake db:migrate
 
-The migration would be run in VMs provided by Google Cloud. It uses a
-privileged service account that will have access to the production cloud
-resources, such as Cloud SQL instances, used by the application. This mechanism
-is often much easier and safer than running the task on a local workstation and
-granting that workstation direct access to those Cloud SQL instances.
+The migration would be run in containers on Google Cloud infrastructure, which
+is much easier and safer than running the task on a local workstation and
+granting that workstation direct access to your production database.
 
-See {AppEngine::Exec} for more information on App Engine remote execution.
+See [AppEngine::Exec](http://www.rubydoc.info/gems/appengine/AppEngine/Exec)
+for more information on App Engine remote execution.
 
-See {AppEngine::Tasks} for more information on running the rake tasks. The
-tasks are available automatically in Rails applications when the gem is
-present. Non-Rails applications may install the tasks by adding the line
+See [AppEngine::Tasks](http://www.rubydoc.info/gems/appengine/AppEngine/Tasks)
+for more information on running the Rake tasks. The tasks are available
+automatically in Rails applications when the gem is present. Non-Rails
+applications may install the tasks by adding the line
 `require "appengine/tasks"` to the `Rakefile`.
-
-Note that you may need to grant additional roles to the Container Builder
-service account that runs your tasks. If your task is failing with API
-authorization errors, try granting the Project Editor role to the CloudBuild
-service account.
 
 ## Development and support
 

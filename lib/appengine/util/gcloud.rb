@@ -77,12 +77,13 @@ module AppEngine
         #
         def binary_path
           unless defined? @binary_path
-            if Gem.win_platform?
-              @binary_path = `where gcloud` == "" ? nil : "gcloud"
-            else
-              @binary_path = `which gcloud`.strip
-              @binary_path = nil if @binary_path.empty?
-            end
+            @binary_path =
+              if ::Gem.win_platform?
+                `where gcloud` == "" ? nil : "gcloud"
+              else
+                path = `which gcloud`.strip
+                path.empty? ? nil : path
+              end
           end
           @binary_path
         end
@@ -168,10 +169,10 @@ module AppEngine
         def execute args, echo: false, capture: false, assert: true
           cmd_array = [binary_path!] + args
           cmd =
-            if Gem.win_platform?
+            if ::Gem.win_platform?
               cmd_array.join " "
             else
-              Shellwords.join cmd_array
+              ::Shellwords.join cmd_array
             end
           puts cmd if echo
           result = capture ? `#{cmd}` : system(cmd)

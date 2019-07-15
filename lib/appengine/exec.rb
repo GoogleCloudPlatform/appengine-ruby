@@ -609,6 +609,7 @@ module AppEngine
     # Performs exec on a GAE standard app.
     #
     def start_deployment_strategy app_info
+      describe_deployment_strategy
       entrypoint_file = app_yaml_file = temp_version = nil
       begin
         puts "\n---------- DEPLOY COMMAND ----------"
@@ -626,6 +627,14 @@ module AppEngine
         ::File.unlink app_yaml_file if app_yaml_file
         delete_temp_version temp_version
       end
+    end
+
+    def describe_deployment_strategy
+      puts "\nUsing the `deployment` strategy for appengine:exec"
+      puts "(i.e. deploying a temporary version of your app)"
+      puts "PROJECT: #{@project}"
+      puts "SERVICE: #{@service}"
+      puts "TIMEOUT: #{@timeout}"
     end
 
     def create_secret
@@ -744,6 +753,8 @@ module AppEngine
       cloud_sql_instances = beta_settings["cloud_sql_instances"] || []
       image = app_info["deployment"]["container"]["image"]
 
+      describe_build_strategy
+
       config = build_config command, image, env_variables, cloud_sql_instances
       file = ::Tempfile.new ["cloudbuild_", ".json"]
       begin
@@ -759,6 +770,16 @@ module AppEngine
       ensure
         file.close!
       end
+    end
+
+    def describe_build_strategy
+      puts "\nUsing the `cloud_build` strategy for appengine:exec"
+      puts "(i.e. running your app image in Cloud Build)"
+      puts "PROJECT: #{@project}"
+      puts "SERVICE: #{@service}"
+      puts "VERSION: #{@version}"
+      puts "TIMEOUT: #{@timeout}"
+      puts ""
     end
 
     ##
