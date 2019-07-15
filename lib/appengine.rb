@@ -1,4 +1,6 @@
-# Copyright 2016 Google Inc. All rights reserved.
+# frozen_string_literal: true
+
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,16 +13,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-;
 
-# # Google AppEngine integration
+
+##
+# ## Google AppEngine integration
 #
 # The AppEngine module includes optional tools helping Ruby applications to
 # integrate more closely with the Google App Engine environment.
-
+#
 module AppEngine
+  ##
+  # Internal utilities
+  #
+  module Util
+  end
 end
-
 
 require "appengine/version"
 require "appengine/env"

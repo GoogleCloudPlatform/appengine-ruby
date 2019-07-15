@@ -1,4 +1,6 @@
-# Copyright 2017 Google Inc. All rights reserved.
+# frozen_string_literal: true
+
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,9 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-;
+
 
 require "shellwords"
+require "English"
 
 module AppEngine
   module Util
@@ -75,7 +78,7 @@ module AppEngine
         def binary_path
           unless defined? @binary_path
             if Gem.win_platform?
-              @binary_path = `where gcloud` == '' ? nil : 'gcloud'
+              @binary_path = `where gcloud` == "" ? nil : "gcloud"
             else
               @binary_path = `which gcloud`.strip
               @binary_path = nil if @binary_path.empty?
@@ -107,9 +110,10 @@ module AppEngine
         #
         def current_project
           unless defined? @current_project
-            @current_project = execute [
+            params = [
               "config", "list", "core/project", "--format=value(core.project)"
-            ], capture: true
+            ]
+            @current_project = execute params, capture: true
             @current_project = nil if @current_project.empty?
           end
           @current_project
@@ -143,7 +147,7 @@ module AppEngine
           binary_path!
           current_project!
           auths = execute ["auth", "list", "--format=value(account)"],
-              capture: true
+                          capture: true
           raise GcloudNotAuthenticated if auths.empty?
         end
 
@@ -162,13 +166,17 @@ module AppEngine
         #     depending on the value of the `capture` parameter.
         #
         def execute args, echo: false, capture: false, assert: true
-          joined_args = Gem.win_platform? ? args.join(" ") : Shellwords.join(args)
-
+          joined_args =
+            if Gem.win_platform?
+              args.join " "
+            else
+              Shellwords.join args
+            end
           cmd = "#{binary_path!} #{joined_args}"
           puts cmd if echo
           result = capture ? `#{cmd}` : system(cmd)
-          code = $?.exitstatus
-          raise GcloudFailed.new($?.exitstatus) if assert && code != 0
+          code = $CHILD_STATUS.exitstatus
+          raise GcloudFailed, code if assert && code != 0
           result
         end
 

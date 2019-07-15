@@ -1,4 +1,6 @@
-# Copyright 2017 Google Inc. All rights reserved.
+# frozen_string_literal: true
+
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-;
+
 
 require "erb"
 require "json"
@@ -238,11 +240,10 @@ module AppEngine
   # you will not be billed for additional App Engine instance usage.
   #
   class Exec
-    @default_timeout = "10m".freeze
-    @default_service = "default".freeze
-    @default_config_path = "./app.yaml".freeze
-    @default_wrapper_image =
-      "gcr.io/google-appengine/exec-wrapper:latest".freeze
+    @default_timeout = "10m"
+    @default_service = "default"
+    @default_config_path = "./app.yaml"
+    @default_wrapper_image = "gcr.io/google-appengine/exec-wrapper:latest"
 
     ##
     # Base class for exec-related usage errors.
@@ -313,7 +314,7 @@ module AppEngine
     # versions at all could be found for the given service.
     #
     class NoSuchVersion < UsageError
-      def initialize service, version=nil
+      def initialize service, version = nil
         @service = service
         @version = version
         if version
@@ -369,14 +370,15 @@ module AppEngine
                         service: nil, config_path: nil, version: nil,
                         timeout: nil, project: nil, wrapper_image: nil,
                         strategy: nil
-        escaped_args = args.map{ |arg|
-          arg.gsub(/[,\[\]]/){ |m| "\\#{m}" }
-        }
-        if escaped_args.empty?
-          name_with_args = name
-        else
-          name_with_args = "#{name}[#{escaped_args.join ','}]"
+        escaped_args = args.map do |arg|
+          arg.gsub(/[,\[\]]/) { |m| "\\#{m}" }
         end
+        name_with_args =
+          if escaped_args.empty?
+            name
+          else
+            "#{name}[#{escaped_args.join ','}]"
+          end
         new ["bundle", "exec", "rake", name_with_args] + env_args,
             service: service, config_path: config_path, version: version,
             timeout: timeout, project: project, wrapper_image: wrapper_image,
@@ -473,7 +475,7 @@ module AppEngine
     # @return [String] The execution strategy to use. Allowed values are
     #     `"deployment"` and `"cloud_build"`.
     # @return [nil] to choose a default based on the App Engine environment
-    #     (flexible or standard). 
+    #     (flexible or standard).
     #
     attr_accessor :strategy
 
@@ -500,18 +502,17 @@ module AppEngine
     #
     def resolve_parameters
       @timestamp_suffix = ::Time.now.strftime "%Y%m%d%H%M%S"
-      unless @command.is_a? Array
-        @command = ::Shellwords.parse @command.to_s
-      end
+      @command = ::Shellwords.parse @command.to_s unless @command.is_a? Array
       @project ||= default_project
       @service ||= service_from_config || Exec.default_service
       @version ||= latest_version @service
       @timeout ||= Exec.default_timeout
       @timeout_seconds = parse_timeout @timeout
       @wrapper_image ||= Exec.default_wrapper_image
+      self
     end
 
-    def resolve_strategy(app_env)
+    def resolve_strategy app_env
       @strategy = @strategy.to_s.downcase
       if @strategy.empty?
         @strategy = app_env == "flexible" ? "cloud_build" : "deployment"
@@ -520,7 +521,7 @@ module AppEngine
          @strategy != "cloud_build" && @strategy != "deployment"
         raise UnsupportedStrategy.new @strategy, app_env
       end
-      @strategy 
+      @strategy
     end
 
     def service_from_config
@@ -528,9 +529,9 @@ module AppEngine
       @config_path ||= Exec.default_config_path
       ::YAML.load_file(config_path)["service"]
     rescue ::Errno::ENOENT
-      raise ConfigFileNotFound.new @config_path
-    rescue
-      raise BadConfigFileFormat.new @config_path
+      raise ConfigFileNotFound, @config_path
+    rescue ::StandardError
+      raise BadConfigFileFormat, @config_path
     end
 
     def default_project
@@ -543,14 +544,12 @@ module AppEngine
     end
 
     def parse_timeout timeout_str
-      if timeout_str =~ /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/
-        hours = ::Regexp.last_match(1).to_i
-        minutes = ::Regexp.last_match(2).to_i
-        seconds = ::Regexp.last_match(3).to_i
-        hours * 3600 + minutes * 60 + seconds
-      else
-        raise BadParameter.new "timeout", timeout_str
-      end
+      matched = timeout_str =~ /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/
+      raise BadParameter.new "timeout", timeout_str unless matched
+      hours = ::Regexp.last_match(1).to_i
+      minutes = ::Regexp.last_match(2).to_i
+      seconds = ::Regexp.last_match(3).to_i
+      hours * 3600 + minutes * 60 + seconds
     end
 
     ##
@@ -573,7 +572,7 @@ module AppEngine
         ],
         capture: true, assert: false
       result = result.split.first
-      raise NoSuchVersion.new(service) unless result
+      raise NoSuchVersion, service unless result
       result
     end
 
@@ -619,7 +618,7 @@ module AppEngine
         temp_version = deploy_temp_app app_yaml_file
         puts "\n---------- EXECUTE COMMAND ----------"
         puts "COMMAND: #{@command.inspect}\n\n"
-        exit_status = track_status app_info, temp_version, secret
+        exit_status = track_status temp_version, secret
         puts "\nEXIT STATUS: #{exit_status}"
       ensure
         puts "\n---------- CLEANUP ----------"
@@ -630,7 +629,7 @@ module AppEngine
     end
 
     def create_secret
-      ::SecureRandom.alphanumeric(20)
+      ::SecureRandom.alphanumeric 20
     end
 
     def copy_entrypoint secret
@@ -638,7 +637,7 @@ module AppEngine
         ::File.join(::File.dirname(::File.dirname(__dir__)),
                     "data", "exec_standard_entrypoint.rb.erb")
       entrypoint_file = "appengine_exec_entrypoint_#{@timestamp_suffix}.rb"
-      erb = ::ERB.new(::File.read(entrypoint_template))
+      erb = ::ERB.new ::File.read entrypoint_template
       data = {
         secret: secret.inspect, command: command.inspect
       }
@@ -651,10 +650,10 @@ module AppEngine
 
     def copy_app_yaml app_info, entrypoint_file
       yaml_data = {
-        "runtime" => app_info["runtime"],
-        "service" => @service,
-        "entrypoint" => "ruby #{entrypoint_file}",
-        "env_variables" => app_info["envVariables"],
+        "runtime"        => app_info["runtime"],
+        "service"        => @service,
+        "entrypoint"     => "ruby #{entrypoint_file}",
+        "env_variables"  => app_info["envVariables"],
         "manual_scaling" => { "instances" => 1 }
       }
       if app_info["env"] == "flexible"
@@ -672,13 +671,12 @@ module AppEngine
     def complete_flex_app_yaml yaml_data, app_info
       yaml_data["env"] = "flex"
       orig_path = (app_info["betaSettings"] || {})["module_yaml_path"]
-      if orig_path
-        orig_yaml = ::YAML.load_file orig_path
-        copy_keys = ["skip_files", "resources", "network", "runtime_config",
-                     "beta_settings"]
-        copy_keys.each do |key|
-          yaml_data[key] = orig_yaml[key] if orig_yaml[key]
-        end
+      return unless orig_path
+      orig_yaml = ::YAML.load_file orig_path
+      copy_keys = ["skip_files", "resources", "network", "runtime_config",
+                   "beta_settings"]
+      copy_keys.each do |key|
+        yaml_data[key] = orig_yaml[key] if orig_yaml[key]
       end
     end
 
@@ -697,17 +695,14 @@ module AppEngine
       temp_version
     end
 
-    def track_status app_info, temp_version, secret
+    def track_status temp_version, secret
       host = "#{temp_version}.#{@service}.#{@project}.appspot.com"
-      ::Net::HTTP.start(host) do |http|
+      ::Net::HTTP.start host do |http|
         outpos = errpos = 0
         delay = 0.0
         loop do
           sleep delay
-          uri = URI("http://#{host}/#{secret}")
-          uri.query = URI.encode_www_form({outpos: outpos, errpos: errpos})
-          response = http.request_get uri
-          data = JSON.parse response.body
+          data = query_data host, secret, outpos, errpos
           data["outlines"].each { |line| puts "[STDOUT] #{line}" }
           data["errlines"].each { |line| puts "[STDERR] #{line}" }
           outpos = data["outpos"]
@@ -717,13 +712,24 @@ module AppEngine
             http.request_post "/#{secret}/kill", ""
             return "timeout"
           end
-          if data["outlines"].empty? && data["errlines"].empty?
-            delay += 0.1
-            delay = 0.5 if delay > 0.5
-          else
-            delay = 0.0
-          end
+          delay = update_delay delay, data
         end
+      end
+    end
+
+    def query_data host, secret, outpos, errpos
+      uri = URI("http://#{host}/#{secret}")
+      uri.query = ::URI.encode_www_form outpos: outpos, errpos: errpos
+      response = http.request_get uri
+      ::JSON.parse response.body
+    end
+
+    def update_delay delay, data
+      if data["outlines"].empty? && data["errlines"].empty?
+        delay += 0.1
+        delay > 1.0 ? 1.0 : delay
+      else
+        0.0
       end
     end
 
@@ -776,7 +782,8 @@ module AppEngine
     def build_config command, image, env_variables, cloud_sql_instances
       args = ["-i", image]
       env_variables.each do |k, v|
-        args << "-e" << "#{k}=#{v.gsub('$', '$$')}"
+        v = v.gsub "$", "$$"
+        args << "-e" << "#{k}=#{v}"
       end
       unless cloud_sql_instances.empty?
         cloud_sql_instances = Array(cloud_sql_instances)

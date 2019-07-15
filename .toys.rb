@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-;
+
 
 expand :clean, paths: ["pkg", "doc", ".yardoc", "tmp"]
 
@@ -22,7 +22,7 @@ expand :rubocop
 expand :yardoc do |t|
   t.generate_output_flag = true
   t.fail_on_warning = true
-  # t.fail_on_undocumented_objects = true
+  t.fail_on_undocumented_objects = true
 end
 
 expand :gem_build
@@ -47,8 +47,8 @@ tool "ci" do
   end
 
   def run
-    exec_tool(["test"], name: "Tests")
-    # exec_tool(["rubocop"], name: "Style checker")
-    # exec_tool(["yardoc"], name: "Docs generation")
+    exec_tool ["test"], name: "Tests"
+    exec_tool ["rubocop"], name: "Style checker"
+    exec_tool ["yardoc"], name: "Docs generation"
   end
 end

@@ -1,4 +1,6 @@
-# Copyright 2016 Google Inc. All rights reserved.
+# frozen_string_literal: true
+
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,25 +13,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-;
-
-require 'minitest/autorun'
-require 'appengine'
 
 
-module AppEngine
-  module Tests  # :nodoc:
+require "minitest/autorun"
+require "appengine"
 
-    class TestEnv < ::Minitest::Test  # :nodoc:
-
-      def test_app_engine
-        ::ENV["GAE_INSTANCE"] = "instance-123"
-        assert Env.app_engine?
-        ::ENV.delete "GAE_INSTANCE"
-        refute Env.app_engine?
-      end
-
-    end
-
+describe AppEngine::Env do
+  it "behaves as a Google::Cloud::Env" do
+    ::ENV["GAE_INSTANCE"] = "instance-123"
+    assert AppEngine::Env.app_engine?
+    ::ENV.delete "GAE_INSTANCE"
+    refute AppEngine::Env.app_engine?
   end
 end
