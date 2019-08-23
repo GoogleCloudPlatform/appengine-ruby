@@ -502,7 +502,7 @@ module AppEngine
     #
     def resolve_parameters
       @timestamp_suffix = ::Time.now.strftime "%Y%m%d%H%M%S"
-      @command = ::Shellwords.parse @command.to_s unless @command.is_a? Array
+      @command = ::Shellwords.split @command.to_s unless @command.is_a? Array
       @project ||= default_project
       @service ||= service_from_config || Exec.default_service
       @version ||= latest_version @service
