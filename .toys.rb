@@ -13,11 +13,11 @@
 # limitations under the License.
 
 
-expand :clean, paths: ["pkg", "doc", ".yardoc", "tmp"]
+expand :clean, paths: :gitignore
 
-expand :minitest, libs: ["lib", "test"]
+expand :minitest, libs: ["lib", "test"], bundler: true
 
-expand :rubocop
+expand :rubocop, bundler: true
 
 expand :yardoc do |t|
   t.generate_output_flag = true
@@ -50,5 +50,6 @@ tool "ci" do
     exec_tool ["test"], name: "Tests"
     exec_tool ["rubocop"], name: "Style checker"
     exec_tool ["yardoc"], name: "Docs generation"
+    exec_tool ["build"], name: "Gem build"
   end
 end
