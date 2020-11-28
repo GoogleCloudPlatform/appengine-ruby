@@ -113,6 +113,10 @@ module AppEngine
   # the "cloud_build" strategy, and applies only to that strategy.) Normally,
   # you should not override this unless you are testing a new wrapper.
   #
+  # #### CLOUD_BUILD_GCS_LOG_DIR
+  #
+  # GCS bucket name of the cloud build log when GAE_STRATEGY is "cloud_build".
+  # (ex. "gs://BUCKET-NAME/FOLDER-NAME")
   module Tasks
     ## @private
     PROJECT_ENV = "GAE_PROJECT"
@@ -128,6 +132,8 @@ module AppEngine
     TIMEOUT_ENV = "GAE_TIMEOUT"
     ## @private
     WRAPPER_IMAGE_ENV = "GAE_EXEC_WRAPPER_IMAGE"
+    ## @private
+    GCS_LOG_DIR = "CLOUD_BUILD_GCS_LOG_DIR"
 
     @defined = false
 
@@ -161,7 +167,8 @@ module AppEngine
                               version:       ::ENV[VERSION_ENV],
                               timeout:       ::ENV[TIMEOUT_ENV],
                               wrapper_image: ::ENV[WRAPPER_IMAGE_ENV],
-                              strategy:      ::ENV[STRATEGY_ENV]
+                              strategy:      ::ENV[STRATEGY_ENV],
+                              gcs_log_dir:   ::ENV[GCS_LOG_DIR]
           start_and_report_errors app_exec
           exit
         end
@@ -273,6 +280,11 @@ module AppEngine
             image that emulates the App Engine environment in Google Cloud Build for
             the "cloud_build" strategy, and applies only to that strategy.) Normally,
             you should not override this unless you are testing a new wrapper.
+
+          CLOUD_BUILD_GCS_LOG_DIR
+
+            GCS bucket name of the cloud build log when GAE_STRATEGY is "cloud_build".
+            (ex. "gs://BUCKET-NAME/FOLDER-NAME")
 
           This rake task is provided by the "appengine" gem. To make these tasks
           available, add the following line to your Rakefile:

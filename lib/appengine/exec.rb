@@ -176,6 +176,11 @@ module AppEngine
   # accessed only over a private IP, you should use the `deployment` strategy
   # instead.
   #
+  # The Cloud Build log is output to the directory specified by
+  # "CLOUD_BUILD_GCS_LOG_DIR". (ex. "gs://BUCKET-NAME/FOLDER-NAME")
+  # By default, log directory name is
+  # "gs://[PROJECT_NUMBER].cloudbuild-logs.googleusercontent.com/".
+  #
   # ### Specifying the host application
   #
   # The `cloud_build` strategy needs to know exactly which app, service, and
@@ -366,11 +371,13 @@ module AppEngine
       #     standard). Allowed values are `nil`, `"deployment"` (which is the
       #     default for Standard), and `"cloud_build"` (which is the default
       #     for Flexible).
+      # @param gcs_log_dir [String,nil] GCS bucket name of the cloud build log
+      #     when strategy is "cloud_build". (ex. "gs://BUCKET-NAME/FOLDER-NAME")
       #
       def new_rake_task name, args: [], env_args: [],
                         service: nil, config_path: nil, version: nil,
                         timeout: nil, project: nil, wrapper_image: nil,
-                        strategy: nil
+                        strategy: nil, gcs_log_dir: nil
         escaped_args = args.map do |arg|
           arg.gsub(/[,\[\]]/) { |m| "\\#{m}" }
         end
@@ -383,7 +390,7 @@ module AppEngine
         new ["bundle", "exec", "rake", name_with_args] + env_args,
             service: service, config_path: config_path, version: version,
             timeout: timeout, project: project, wrapper_image: wrapper_image,
-            strategy: strategy
+            strategy: strategy, gcs_log_dir: gcs_log_dir
       end
     end
 
@@ -411,10 +418,12 @@ module AppEngine
     #     standard). Allowed values are `nil`, `"deployment"` (which is the
     #     default for Standard), and `"cloud_build"` (which is the default for
     #     Flexible).
+    # @param gcs_log_dir [String,nil] GCS bucket name of the cloud build log
+    #     when strategy is "cloud_build". (ex. "gs://BUCKET-NAME/FOLDER-NAME")
     #
     def initialize command,
                    project: nil, service: nil, config_path: nil, version: nil,
-                   timeout: nil, wrapper_image: nil, strategy: nil
+                   timeout: nil, wrapper_image: nil, strategy: nil, gcs_log_dir: nil
       @command = command
       @service = service
       @config_path = config_path
@@ -423,6 +432,7 @@ module AppEngine
       @project = project
       @wrapper_image = wrapper_image
       @strategy = strategy
+      @gcs_log_dir = gcs_log_dir
 
       yield self if block_given?
     end
@@ -762,13 +772,17 @@ module AppEngine
       begin
         ::JSON.dump config, file
         file.flush
-        Util::Gcloud.execute [
+        execute_command = [
           "builds", "submit",
           "--project", @project,
           "--no-source",
           "--config", file.path,
-          "--timeout", @timeout
+          "--timeout", @timeout,
         ]
+        execute_command.concat([
+          "--gcs-log-dir", @gcs_log_dir
+        ]) unless @gcs_log_dir.nil?
+        Util::Gcloud.execute execute_command
       ensure
         file.close!
       end
