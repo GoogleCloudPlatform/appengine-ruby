@@ -40,21 +40,20 @@ require "appengine/version"
                ::Dir.glob("data/**/*") +
                ::Dir.glob("*.md") +
                ["LICENSE", ".yardopts"]
-  spec.required_ruby_version = ">= 2.3.0"
+  spec.required_ruby_version = ">= 2.4.0"
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "google-cloud-env", "~> 1.2"
-  spec.add_dependency "stackdriver", "~> 0.15"
+  spec.add_dependency "google-cloud-env", "~> 1.4"
+  spec.add_dependency "stackdriver", "~> 0.16"
 
   spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "google-style", "~> 0.3"
+  spec.add_development_dependency "google-style", "~> 1.24.0"
   spec.add_development_dependency "minitest", "~> 5.11"
   spec.add_development_dependency "minitest-focus", "~> 1.1"
   spec.add_development_dependency "minitest-rg", "~> 5.2"
   spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "rdoc", "~> 6.0"
   spec.add_development_dependency "redcarpet", "~> 3.4"
-  spec.add_development_dependency "rubocop", "~> 0.64.0"
-  spec.add_development_dependency "toys", "~> 0.8"
+  spec.add_development_dependency "toys", "~> 0.11"
   spec.add_development_dependency "yard", "~> 0.9"
 end

@@ -15,6 +15,7 @@
 # limitations under the License.
 
 
+require "date"
 require "erb"
 require "json"
 require "net/http"
@@ -751,7 +752,8 @@ module AppEngine
       env_variables = app_info["envVariables"] || {}
       beta_settings = app_info["betaSettings"] || {}
       cloud_sql_instances = beta_settings["cloud_sql_instances"] || []
-      image = app_info["deployment"]["container"]["image"]
+      container = app_info["deployment"]["container"]
+      image = container ? container["image"] : image_from_build(app_info)
 
       describe_build_strategy
 
@@ -770,6 +772,31 @@ module AppEngine
       ensure
         file.close!
       end
+    end
+
+    ##
+    # @private
+    # Workaround for https://github.com/GoogleCloudPlatform/appengine-ruby/issues/33
+    # Determines the image by looking it up in Cloud Build
+    #
+    def image_from_build app_info
+      create_time = ::DateTime.parse(app_info["createTime"]).to_time.utc
+      after_time = (create_time - 3600).strftime "%Y-%m-%dT%H:%M:%SZ"
+      before_time = (create_time + 3600).strftime "%Y-%m-%dT%H:%M:%SZ"
+      partial_uri = "gcr.io/#{@project}/appengine/#{@service}.#{@version}"
+      filter = "createTime>#{after_time} createTime<#{before_time} images[]:#{partial_uri}"
+      result = Util::Gcloud.execute \
+        [
+          "builds", "list",
+          "--project", @project,
+          "--filter", filter,
+          "--format", "json"
+        ],
+        capture: true, assert: false
+      result.strip!
+      raise NoSuchVersion.new(@service, @version) if result.empty?
+      build_info = ::JSON.parse(result).first
+      build_info["images"].first
     end
 
     def describe_build_strategy
