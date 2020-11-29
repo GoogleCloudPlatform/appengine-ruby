@@ -777,11 +777,9 @@ module AppEngine
           "--project", @project,
           "--no-source",
           "--config", file.path,
-          "--timeout", @timeout,
+          "--timeout", @timeout
         ]
-        execute_command.concat([
-          "--gcs-log-dir", @gcs_log_dir
-        ]) unless @gcs_log_dir.nil?
+        execute_command.concat ["--gcs-log-dir", @gcs_log_dir] unless @gcs_log_dir.nil?
         Util::Gcloud.execute execute_command
       ensure
         file.close!

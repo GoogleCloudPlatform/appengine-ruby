@@ -1,0 +1,49 @@
+name: "CI tests"
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  tests:
+    if: ${{ github.repository == 'GoogleCloudPlatform/appengine-ruby' }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            ruby: "2.4"
+            flags: "--only --test-unit"
+          - os: ubuntu-latest
+            ruby: "2.5"
+            flags: "--only --test-unit"
+          - os: ubuntu-latest
+            ruby: "2.6"
+            flags: "--only --test-unit"
+          - os: ubuntu-latest
+            ruby: "2.7"
+          - os: macos-latest
+            ruby: "2.7"
+            flags: "--only --test-unit"
+          - os: windows-latest
+            ruby: "2.7"
+            flags: "--only --test-unit"
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install Ruby ${{ matrix.ruby }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        shell: bash
+        run: "bundle install && gem install --no-document toys"
+      - name: Test ${{ matrix.flags }}
+        shell: bash
+        run: toys ci ${{ matrix.flags }} < /dev/null
