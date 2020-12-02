@@ -2,11 +2,11 @@
 
 This is the change history for the appengine gem.
 
-## v0.6.0 (unreleased)
+## v0.6.0 (2020-12-02)
 
 *   Fix failure in the appengine:exec cloud_build strategy when App Engine doesn't provide the image
 *   Fix exception when appengine:exec is provided a shell command rather than a command array (tpbowden)
-*   Update stackdriver dependency to 0.16 and google-cloud-env dependency to 1.4
+*   Update stackdriver dependency to 0.20 and google-cloud-env dependency to 1.4
 
 ## v0.5.0 (2019-07-15)
 
