@@ -20,6 +20,9 @@ require "shellwords"
 require "appengine/util/gcloud"
 require "appengine/exec"
 
+require "google/serverless/exec/gcloud"
+require "google/serverless/exec"
+
 module AppEngine
   ##
   # # App Engine Rake Tasks.
