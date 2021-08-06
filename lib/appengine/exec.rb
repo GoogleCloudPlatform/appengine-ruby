@@ -20,7 +20,7 @@ require "google/serverless/exec"
 ## The Appengine gem uses the Google Serverless gem for remote execution.
 # This may be used for safe running of ops and maintenance tasks, such as
 # database migrations in a production serverless environment.
-# See [Google Serverless Exec](https://www.rubydoc.info/gems/google-serverless-exec/0.1.0)
+# See [Google Serverless Exec](https://www.rubydoc.info/gems/google-serverless-exec)
 # for more information on the usage documentation
 
 module AppEngine
