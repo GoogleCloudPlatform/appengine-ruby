@@ -15,11 +15,13 @@
 # limitations under the License.
 
 
-require "google/serverless/exec/gcloud"
+require "google/serverless/exec"
 
 ## The Appengine gem uses the Google Serverless gem for remote execution.
 # This may be used for safe running of ops and maintenance tasks, such as
 # database migrations in a production serverless environment.
 # See {Google::Serverless::Exec} for more information on the usage documentation
 
-AppEngine::Exec = Google::Serverless::Exec
+module AppEngine
+  Exec = Google::Serverless::Exec
+end
