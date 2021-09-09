@@ -375,7 +375,7 @@ module AppEngine
       end
 
       def report_error str
-        ::STDERR.puts str
+        warn str
         exit 1
       end
     end

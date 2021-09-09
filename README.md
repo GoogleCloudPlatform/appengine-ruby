@@ -1,7 +1,6 @@
 Google App Engine Integration Tools
 ===================================
 
-[![CircleCI](https://circleci.com/gh/GoogleCloudPlatform/appengine-ruby.svg?style=svg)](https://circleci.com/gh/GoogleCloudPlatform/appengine-ruby)
 [![Gem Version](https://badge.fury.io/rb/appengine.svg)](https://badge.fury.io/rb/appengine)
 
 This repository contains the "appengine" gem, a collection of libraries and

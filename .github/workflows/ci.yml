@@ -16,9 +16,6 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            ruby: "2.4"
-            flags: "--only --test-unit"
-          - os: ubuntu-latest
             ruby: "2.5"
             flags: "--only --test-unit"
           - os: ubuntu-latest
@@ -26,6 +23,9 @@ jobs:
             flags: "--only --test-unit"
           - os: ubuntu-latest
             ruby: "2.7"
+          - os: ubuntu-latest
+            ruby: "3.0"
+            flags: "--only --test-unit"
           - os: macos-latest
             ruby: "2.7"
             flags: "--only --test-unit"
