@@ -2,6 +2,21 @@
 
 This is the change history for the appengine gem.
 
+## 0.1.0 (2021-09-24)
+
+
+### Features
+
+* add gcs log dir option ([25fb7aa](https://www.github.com/GoogleCloudPlatform/appengine-ruby/commit/25fb7aa149154ca3cdcc75a81d9371c3e6b696c0))
+* Replace the appengine exec class with an alias to serverless-exec ([b186e7c](https://www.github.com/GoogleCloudPlatform/appengine-ruby/commit/b186e7cc9480101699f8792a24279801a8b5815e))
+* Update stackdriver dependency ([105677d](https://www.github.com/GoogleCloudPlatform/appengine-ruby/commit/105677df6a20722dab31699f24d672aa6663fe3c))
+
+
+### Bug Fixes
+
+* Fix exception when a shell command rather than a command array is given in Exec ([940672e](https://www.github.com/GoogleCloudPlatform/appengine-ruby/commit/940672e5db394325e55de3d3097823270a2f6857))
+* Fix failure in the appengine:exec cloud_build strategy when App Engine doesn't provide the image ([ecb2057](https://www.github.com/GoogleCloudPlatform/appengine-ruby/commit/ecb205780e990550659b5b274088b880a1315eb2))
+
 ## v0.6.0 (2020-12-02)
 
 *   Fix failure in the appengine:exec cloud_build strategy when App Engine doesn't provide the image
