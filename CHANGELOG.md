@@ -2,6 +2,18 @@
 
 This is the change history for the appengine gem.
 
+### 0.7.0 (2022-04-22)
+
+#### Features
+
+* add gcs log dir option
+* Replace the appengine exec class with an alias to serverless-exec
+* Update stackdriver dependency
+#### Bug Fixes
+
+* Fix exception when a shell command rather than a command array is given in Exec
+* Fix failure in the appengine:exec cloud_build strategy when App Engine doesn't provide the image
+
 ## v0.6.0 (2020-12-02)
 
 *   Fix failure in the appengine:exec cloud_build strategy when App Engine doesn't provide the image
