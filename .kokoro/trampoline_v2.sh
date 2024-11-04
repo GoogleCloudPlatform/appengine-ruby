@@ -275,6 +275,7 @@ if [[ -n "${TRAMPOLINE_SERVICE_ACCOUNT:-}" ]]; then
     gcloud auth activate-service-account \
 	   --key-file "${TRAMPOLINE_SERVICE_ACCOUNT}"
     log_yellow "Configuring Container Registry access"
+    gcloud auth configure-docker --quiet
 fi
 
 required_envvars=(
